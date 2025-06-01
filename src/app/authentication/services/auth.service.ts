@@ -17,6 +17,20 @@ export class AuthService {
     }
   }
 
+  register(user: { username: string; email: string; password: string }): Observable<any> {
+    if (user.username && user.email && user.password) {
+      return of({
+        message: 'Registro exitoso',
+        user: {
+          username: user.username,
+          email: user.email
+        }
+      });
+    } else {
+      return throwError(() => new Error('Todos los campos son obligatorios'));
+    }
+  }
+
   logout(): void {
     localStorage.removeItem('token');
   }
