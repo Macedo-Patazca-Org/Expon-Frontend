@@ -1,1 +1,57 @@
-<p>profile-view works!</p>
+<div class="configuration-container">
+  <h2>Configuration</h2>
+
+  <div class="profile-settings-card">
+    <h3>PROFILE SETTINGS</h3>
+
+    <div class="form-grid">
+      <!-- Todos los campos como antes -->
+      <div class="form-group">
+        <label>Name</label>
+        <div class="readonly-box">{{ user.name }}</div>
+      </div>
+
+      <div class="form-group">
+        <label>Last Name</label>
+        <div class="readonly-box">{{ user.lastname }}</div>
+      </div>
+
+      <div class="form-group">
+        <label>Email</label>
+        <div class="readonly-box">{{ user.email }}</div>
+      </div>
+
+      <div class="form-group">
+        <label>Password</label>
+        <div class="readonly-box">••••••••</div>
+      </div>
+
+      <div class="form-group">
+        <label>Gender</label>
+        <div class="readonly-box">Male</div>
+      </div>
+
+      <div class="form-group">
+        <label>Profile picture</label>
+        <div class="readonly-box">/assets/images/avatar-img.png</div>
+      </div>
+
+      <div class="form-group">
+        <label>Preferred presentation type</label>
+        <div class="readonly-box">Formal</div>
+      </div>
+
+      <div class="form-group">
+        <label>Account</label>
+        <button class="delete-btn">
+          <i class="fas fa-trash-alt"></i> Delete your account
+        </button>
+      </div>
+    </div>
+
+    <!-- Botón Edit al final -->
+    <div class="edit-button-container">
+      <a routerLink="/profile/edit" class="edit-button">Edit</a>
+    </div>
+  </div>
+</div>

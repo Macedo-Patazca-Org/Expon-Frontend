@@ -1,0 +1,61 @@
+<div class="dashboard-container" [class.collapsed]="isCollapsed">
+  <aside class="sidebar">
+    <!-- Contenido superior: logo, perfil, menú -->
+    <div>
+      <div class="top-section">
+        <button class="toggle-btn" (click)="toggleSidebar()">
+          <i class="fas fa-bars"></i>
+        </button>
+        <div class="logo" *ngIf="!isCollapsed">
+          <img src="/assets/images/logo-img.png" alt="Expon Logo" />
+        </div>
+      </div>
+
+      <div class="profile" *ngIf="!isCollapsed">
+        <img src="/assets/images/avatar-img.png" alt="User Avatar" class="avatar" />
+        <p class="username">Luis Perez</p>
+      </div>
+
+      <nav class="menu">
+        <a routerLink="/" title="Home">
+          <i class="fas fa-home"></i>
+          <span *ngIf="!isCollapsed">Home</span>
+        </a>
+
+        <a routerLink="/presentations" title="Presentation">
+          <i class="fas fa-chalkboard-teacher"></i>
+          <span *ngIf="!isCollapsed">Presentation</span>
+        </a>
+
+        <a routerLink="/presentations/upload" title="History">
+          <i class="fas fa-history"></i>
+          <span *ngIf="!isCollapsed">History</span>
+        </a>
+
+        <a routerLink="/profile" title="Configuration">
+          <i class="fas fa-cog"></i>
+          <span *ngIf="!isCollapsed">Configuration</span>
+        </a>
+      </nav>
+    </div>
+
+    <!-- Contenido inferior: plan y logout -->
+    <div>
+      <div class="plan-card" *ngIf="!isCollapsed">
+        <img src="/assets/images/logoplan-img.png" alt="Plan" />
+        <p class="plan-title">Plan confort</p>
+        <p class="plan-description">You currently have an active plan</p>
+        <button class="plan-button" routerLink="/subscriptions/plans">Active plan</button>
+      </div>
+
+      <button class="logout" routerLink="/login">
+        <i class="fas fa-sign-out-alt"></i>
+        <span *ngIf="!isCollapsed">Sign out</span>
+      </button>
+    </div>
+  </aside>
+
+  <main class="dashboard-content">
+    <router-outlet></router-outlet>
+  </main>
+</div>

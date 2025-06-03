@@ -1,0 +1,187 @@
+/* ---------- CONTENEDOR GENERAL ---------- */
+.dashboard-container {
+  display: flex;
+  height: 100vh;
+  transition: all 0.3s;
+}
+
+/* ---------- SIDEBAR PRINCIPAL ---------- */
+.sidebar {
+  width: 260px;
+  background-color: #2B647F;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 2rem 1rem;
+  height: 100vh;
+  box-sizing: border-box;
+  transition: width 0.3s ease-in-out;
+}
+
+/* ---------- SIDEBAR COLAPSADA ---------- */
+.dashboard-container.collapsed .sidebar {
+  width: 80px;
+}
+
+.dashboard-container.collapsed .menu span,
+.dashboard-container.collapsed .logo,
+.dashboard-container.collapsed .username,
+.dashboard-container.collapsed .plan-card,
+.dashboard-container.collapsed .toggle-btn span {
+  display: none;
+}
+
+.dashboard-container.collapsed .menu span {
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+/* ---------- BOTÓN ☰ SOLO EN RESPONSIVE ---------- */
+.toggle-btn {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  cursor: pointer;
+  align-self: flex-start;
+  display: none;
+}
+
+@media screen and (max-width: 1024px) {
+  .toggle-btn {
+    display: block;
+  }
+}
+
+/* ---------- LOGO ---------- */
+.logo {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.logo img {
+  width: 130px;
+}
+
+/* ---------- AVATAR Y USUARIO ---------- */
+.profile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  margin-bottom: 0.5rem;
+}
+
+.username {
+  text-align: center;
+  font-size: 0.85rem;
+}
+
+/* ---------- MENÚ DE NAVEGACIÓN ---------- */
+.menu {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 1rem;
+}
+
+.menu a {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.8rem;
+  color: white;
+  text-decoration: none;
+  transition: background-color 0.3s;
+}
+
+.menu a:hover {
+  background-color: #1d526b;
+}
+
+/* ---------- TARJETA DE PLAN ---------- */
+.plan-card {
+  background-color: #34d1c4;
+  border-radius: 12px;
+  padding: 1rem;
+  text-align: center;
+  color: #fff;
+  margin-bottom: 1rem;
+}
+
+.plan-card img {
+  width: 40px;
+  margin-bottom: 0.5rem;
+}
+
+.plan-title {
+  font-weight: bold;
+}
+
+.plan-description {
+  font-size: 0.8rem;
+  margin-bottom: 0.5rem;
+}
+
+.plan-button {
+  display: inline-block;
+  background-color: white;
+  color: #2B647F;
+  border: none;
+  border-radius: 8px;
+  padding: 0.4rem 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.plan-button:hover {
+  background-color: #e6f7f7;
+}
+
+/* ---------- BOTÓN LOGOUT ---------- */
+.logout {
+  background-color: #ff4d4f;
+  color: white;
+  border: none;
+  padding: 0.6rem;
+  border-radius: 8px;
+  cursor: pointer;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.logout:hover {
+  background-color: #e84344;
+}
+
+/* ---------- CONTENIDO PRINCIPAL ---------- */
+.dashboard-content {
+  flex: 1;
+  background-color: #f5f5f5;
+  padding: 2rem;
+  overflow-y: auto;
+}
+
+/* ---------- RESPONSIVE COMPLEMENTARIO ---------- */
+@media screen and (max-width: 1024px) {
+  .dashboard-container.collapsed .sidebar {
+    width: 80px;
+  }
+
+  .dashboard-content {
+    padding: 1rem;
+  }
+}

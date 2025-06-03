@@ -31,31 +31,41 @@ import { EmotionTrackingComponent } from './emotion-monitoring/pages/emotion-tra
 // Analytics
 import { OverviewComponent } from './analytics/pages/overview/overview/overview.component';
 import { UserProgressComponent } from './analytics/pages/user-progress/user-progress/user-progress.component';
+import { DashboardLayoutComponent } from './shared/layouts/dashboard-layout/dashboard-layout.component';
 
 export const routes: Routes = [
-  { path: '', component: HomeComponent },
-  { path: 'about', component: AboutComponent },
-
+  // Rutas sin dashboard
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
 
-  { path: 'subscriptions/checkout', component: CheckoutComponent },
-  { path: 'subscriptions/plans', component: PlanSelectionComponent },
+  // Rutas con dashboard layout
+  {
+    path: '',
+    component: DashboardLayoutComponent,
+    children: [
+      { path: '', component: HomeComponent },
+      { path: 'about', component: AboutComponent },
 
-  { path: 'profile', component: ProfileViewComponent },
-  { path: 'profile/edit', component: ProfileEditComponent },
+      { path: 'subscriptions/checkout', component: CheckoutComponent },
+      { path: 'subscriptions/plans', component: PlanSelectionComponent },
 
-  { path: 'presentations', component: PresentationListComponent },
-  { path: 'presentations/upload', component: UploadRecordingComponent },
+      { path: 'profile', component: ProfileViewComponent },
+      { path: 'profile/edit', component: ProfileEditComponent },
 
-  { path: 'design/template', component: TemplateConfigComponent },
-  { path: 'design/feedback-config', component: CustomizeFeedbackComponent },
+      { path: 'presentations', component: PresentationListComponent },
+      { path: 'presentations/upload', component: UploadRecordingComponent },
 
-  { path: 'monitoring/live', component: LiveMonitoringComponent },
-  { path: 'monitoring/emotion', component: EmotionTrackingComponent },
+      { path: 'design/template', component: TemplateConfigComponent },
+      { path: 'design/feedback-config', component: CustomizeFeedbackComponent },
 
-  { path: 'analytics/overview', component: OverviewComponent },
-  { path: 'analytics/progress', component: UserProgressComponent },
+      { path: 'monitoring/live', component: LiveMonitoringComponent },
+      { path: 'monitoring/emotion', component: EmotionTrackingComponent },
 
-  { path: '**', redirectTo: '' } // fallback route
+      { path: 'analytics/overview', component: OverviewComponent },
+      { path: 'analytics/progress', component: UserProgressComponent }
+    ]
+  },
+
+  // Fallback
+  { path: '**', redirectTo: '' }
 ];

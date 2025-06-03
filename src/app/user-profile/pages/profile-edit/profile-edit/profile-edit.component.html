@@ -1,1 +1,67 @@
-<p>profile-edit works!</p>
+<div class="configuration-container">
+  <h2>Configuration</h2>
+
+  <div class="profile-settings-card">
+    <h3>PROFILE SETTINGS</h3>
+
+    <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" class="form-grid">
+
+      <div class="form-group">
+        <label>Name</label>
+        <input type="text" formControlName="name" />
+      </div>
+
+      <div class="form-group">
+        <label>Last Name</label>
+        <input type="text" formControlName="lastname" />
+      </div>
+
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" formControlName="email" />
+      </div>
+
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" formControlName="password" />
+      </div>
+
+      <div class="form-group">
+        <label>Gender</label>
+        <select formControlName="gender">
+          <option value="" disabled>Select gender</option>
+          <option>Male</option>
+          <option>Female</option>
+          <option>Other</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Profile picture</label>
+        <input type="text" formControlName="picturePath" placeholder="Upload profile picture" />
+      </div>
+
+      <div class="form-group">
+        <label>Preferred presentation type</label>
+        <select formControlName="preference">
+          <option value="" disabled>Select preference</option>
+          <option>Formal</option>
+          <option>Casual</option>
+          <option>Interactive</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Account</label>
+        <button type="button" class="delete-btn">
+          <i class="fas fa-trash-alt"></i> Delete your account
+        </button>
+      </div>
+
+      <div class="edit-button-container full-width">
+        <a routerLink="/profile" class="edit-button">Save</a>
+      </div>
+
+    </form>
+  </div>
+</div>
