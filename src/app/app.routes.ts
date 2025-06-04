@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 
 // Public pages
-import { HomeComponent } from './public/pages/home/home/home.component';
+//import { HomeComponent } from './public/pages/home/home/home.component';
 import { AboutComponent } from './public/pages/about/about/about.component';
 
 // Authentication
@@ -17,6 +17,7 @@ import { ProfileViewComponent } from './user-profile/pages/profile-view/profile-
 import { ProfileEditComponent } from './user-profile/pages/profile-edit/profile-edit/profile-edit.component';
 
 // Student Management
+import { HomeComponent } from './student-management/pages/home/home.component';
 import { PresentationListComponent } from './student-management/pages/presentation-list/presentation-list/presentation-list.component';
 import { UploadRecordingComponent } from './student-management/pages/upload-recording/upload-recording/upload-recording.component';
 
@@ -51,6 +52,8 @@ export const routes: Routes = [
 
       { path: 'profile', component: ProfileViewComponent },
       { path: 'profile/edit', component: ProfileEditComponent },
+
+
 
       { path: 'presentations', component: PresentationListComponent },
       { path: 'presentations/upload', component: UploadRecordingComponent },
