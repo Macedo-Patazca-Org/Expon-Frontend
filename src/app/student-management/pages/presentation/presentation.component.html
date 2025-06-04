@@ -1,1 +1,56 @@
-<p>presentation works!</p>
+<div class="presentation-wrapper">
+  <h3 class="section-title">Presentation</h3>
+
+  <div class="presentation-container">
+    <h2 class="presentation-title">Record or upload your presentation</h2>
+
+    <!-- 🔹 FILTER BAR -->
+    <div class="filter-wrapper">
+      <div class="filter-select-box">
+        <span class="filter-icon">💡</span>
+        <select class="custom-purpose-select" [(ngModel)]="selectedPurpose">
+          <option value="" disabled selected>Select purpose</option>
+          <option value="practice">Practice</option>
+          <option value="evaluation">Final Evaluation</option>
+        </select>
+      </div>
+
+      <button class="reset-filter-btn" (click)="resetPurpose()">
+        <span class="reset-icon">⟳</span> Restablecer filtro
+      </button>
+    </div>
+
+    <p class="instruction">
+      Have your presentation ready? Upload or record it to the platform to
+      receive personalized analysis.
+    </p>
+
+    <div class="record-box-wrapper">
+      <div class="record-box">
+        <div class="icon-wrapper">
+          <mat-icon fontIcon="mic" class="record-icon"></mat-icon>
+        </div>
+        <button mat-raised-button color="primary" class="record-btn">
+          Start recording audio
+        </button>
+      </div>
+    </div>
+
+    <p class="or-separator">OR</p>
+
+    <div class="upload-box" (click)="uploadInput.click()">
+      Upload audio file (.mp3, .wav)
+    </div>
+    <input
+      type="file"
+      #uploadInput
+      accept=".mp3, .wav"
+      hidden
+      (change)="onFileSelected($event)"
+    />
+
+    <p class="selected-file" *ngIf="selectedFile">
+      File selected: {{ selectedFile.name }}
+    </p>
+  </div>
+</div>

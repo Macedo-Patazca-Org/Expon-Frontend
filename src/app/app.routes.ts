@@ -18,7 +18,8 @@ import { ProfileEditComponent } from './user-profile/pages/profile-edit/profile-
 
 // Student Management
 import { HomeComponent } from './student-management/pages/home/home.component';
-import { PresentationListComponent } from './student-management/pages/presentation-list/presentation-list/presentation-list.component';
+//import { PresentationListComponent } from './student-management/pages/presentation-list/presentation-list/presentation-list.component';
+import { PresentationComponent } from './student-management/pages/presentation/presentation.component';
 import { UploadRecordingComponent } from './student-management/pages/upload-recording/upload-recording/upload-recording.component';
 
 // Presentation Design
@@ -53,9 +54,8 @@ export const routes: Routes = [
       { path: 'profile', component: ProfileViewComponent },
       { path: 'profile/edit', component: ProfileEditComponent },
 
-
-
-      { path: 'presentations', component: PresentationListComponent },
+      { path: 'presentations', component: PresentationComponent },
+      //{ path: 'presentations', component: PresentationListComponent },
       { path: 'presentations/upload', component: UploadRecordingComponent },
 
       { path: 'design/template', component: TemplateConfigComponent },
