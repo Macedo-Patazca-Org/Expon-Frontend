@@ -1,0 +1,208 @@
+/* Contenedor general */
+.history-wrapper {
+  padding: 2rem;
+  background-color: #f4f6f9;
+  /*min-height: 100vh;*/
+}
+
+.section-title {
+  color: #1a1a1a;
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  margin-left: 0.5rem;
+}
+
+.subtitle{
+    color: #1D2D46;
+    font-size: 25px;
+}
+
+/* Cards */
+.history-card {
+  margin-bottom: 1.5rem;
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e0e0e0;
+}
+
+/* Título */
+.card-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #004d61;
+  margin-bottom: 0.5rem;
+}
+
+/* Propósito */
+.card-purpose {
+  font-size: 14px;
+  font-weight: 500;
+  color: #666;
+  margin-bottom: 0.3rem;
+}
+
+/* Fecha */
+.card-date {
+  font-size: 13px;
+  color: #999;
+  margin-bottom: 1rem;
+}
+
+/* Botones */
+.history-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+}
+
+.mat-icon-button {
+  color: #004d61;
+}
+
+.mat-icon-button:hover {
+  background-color: rgba(0, 77, 97, 0.08);
+}
+
+.mdc-notched-outline{
+    display: none !important;
+}
+
+.mat-paginator {
+  margin-top: 1.5rem;
+  padding: 0.5rem 1rem;
+  border-top: 1px solid #e0e0e0;
+  background-color: #fff;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #2e2e2e;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* Íconos de navegación */
+.mat-paginator-navigation-previous,
+.mat-paginator-navigation-next,
+.mat-paginator-navigation-first,
+.mat-paginator-navigation-last {
+  color: #007b9e;
+}
+
+.mat-paginator-icon {
+  font-size: 18px;
+}
+
+/* Selector de tamaño de página */
+.mat-paginator-page-size {
+  margin-right: 1rem;
+}
+
+.mat-select-value {
+  font-weight: 500;
+}
+
+/* Rango: “1–5 of 25” */
+.mat-paginator-range-label {
+  margin: 0 1rem;
+  font-weight: 400;
+}
+
+/* Hover en botones */
+.mat-paginator-navigation-button:hover {
+  background-color: rgba(0, 191, 166, 0.1);
+  border-radius: 6px;
+}
+
+.view-report-btn {
+  padding: 0.35rem 0.5rem;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 0.85rem;
+  text-transform: none;
+  color: white;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+  /*margin: auto;*/
+  display: block;
+  height: fit-content;
+  background-color: #00bfa6 !important;
+}
+
+.btn-text-report{
+    color: #fff;
+}
+
+.view-report-btn:hover {
+  background-color: #00a896;
+}
+
+mat-header-cell {
+    background-color: #2B647F !important;
+    color: #fff !important;
+    font-weight: 400;
+    font-size: 14px;
+    width: 100%;
+}
+
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+    margin-top: 1rem;
+    overflow-y: clip;
+}
+
+mat-header-cell, mat-cell {
+  min-width: 150px;
+  white-space: nowrap;
+}
+
+.mat-header-cell {
+  background-color: #2B647F;
+  color: white;
+  font-weight: 600;
+}
+
+.star-icon {
+  font-size: 22px;
+  cursor: pointer;
+}
+
+.favorite-true {
+  color: #FFD700 !important; /* dorado/amarillo brillante */
+}
+
+
+/* Responsive */
+@media screen and (max-width: 768px) {
+  .history-wrapper {
+    padding: 1rem;
+  }
+
+  .history-actions {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .mat-icon-button {
+    margin-bottom: 0.5rem;
+  }
+  .mat-paginator {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .mat-paginator-range-actions {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .mat-header-cell,
+  .mat-cell {
+    font-size: 13px;
+    padding: 0.5rem;
+  }
+
+  .mat-button {
+    font-size: 12px;
+    padding: 4px 8px;
+  }
+}

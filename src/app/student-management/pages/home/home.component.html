@@ -1,0 +1,29 @@
+<div class="home-container">
+  <div class="header-section">
+    <div class="welcome-message">
+      <h2>Hi, welcome back</h2>
+      <p>You're doing great! Check out your latest presentations.</p>
+    </div>
+    <button class="new-presentation" (click)="goToUpload()">Start new presentation</button>
+  </div>
+
+  <div class="content-section">
+    <div class="presentations">
+      <div class="card" *ngFor="let p of presentations">
+        <img [src]="p.image" alt="Presentation preview">
+        <h4>{{ p.title }}</h4>
+        <p>{{ p.date }}</p>
+      </div>
+    </div>
+
+    <div class="emotions">
+      <h3>Emotional Trend Overview</h3>
+      <div *ngFor="let emotion of emotionSummary | keyvalue">
+        <span>{{ emotion.key }}: {{ emotion.value }}%</span>
+        <div class="bar">
+          <div class="fill" [style.width.%]="emotion.value"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
