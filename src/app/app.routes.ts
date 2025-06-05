@@ -20,8 +20,8 @@ import { ProfileEditComponent } from './user-profile/pages/profile-edit/profile-
 import { HomeComponent } from './student-management/pages/home/home.component';
 //import { PresentationListComponent } from './student-management/pages/presentation-list/presentation-list/presentation-list.component';
 import { PresentationComponent } from './student-management/pages/presentation/presentation.component';
-import { UploadRecordingComponent } from './student-management/pages/upload-recording/upload-recording/upload-recording.component';
-
+//import { UploadRecordingComponent } from './student-management/pages/upload-recording/upload-recording/upload-recording.component';
+import {HistoryComponent} from './student-management/pages/history/history.component';
 // Presentation Design
 import { TemplateConfigComponent } from './presentation-design/pages/template-config/template-config/template-config.component';
 import { CustomizeFeedbackComponent } from './presentation-design/pages/customize-feedback/customize-feedback/customize-feedback.component';
@@ -56,7 +56,8 @@ export const routes: Routes = [
 
       { path: 'presentations', component: PresentationComponent },
       //{ path: 'presentations', component: PresentationListComponent },
-      { path: 'presentations/upload', component: UploadRecordingComponent },
+      //{ path: 'presentations/upload', component: UploadRecordingComponent },
+      { path: 'history', component: HistoryComponent },
 
       { path: 'design/template', component: TemplateConfigComponent },
       { path: 'design/feedback-config', component: CustomizeFeedbackComponent },
