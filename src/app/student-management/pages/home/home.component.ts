@@ -34,4 +34,8 @@ export class HomeComponent implements OnInit {
     const maxPerRow = Math.min(this.presentations.length, 4);
     document.documentElement.style.setProperty('--cards-per-row', maxPerRow.toString());
   }
+
+  goToFeedbackConfig(): void {
+  this.router.navigate(['/design/feedback-config']);
+}
 }
