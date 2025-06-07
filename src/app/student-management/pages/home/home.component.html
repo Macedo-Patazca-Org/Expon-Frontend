@@ -9,7 +9,7 @@
 
   <div class="content-section">
     <div class="presentations">
-      <div class="card" *ngFor="let p of presentations">
+      <div class="card" *ngFor="let p of presentations" (click)="goToFeedbackConfig()">
         <img [src]="p.image" alt="Presentation preview">
         <h4>{{ p.title }}</h4>
         <p>{{ p.date }}</p>

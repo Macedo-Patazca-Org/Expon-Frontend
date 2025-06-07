@@ -7,6 +7,7 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatSortModule } from '@angular/material/sort';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { PresentationSummary } from '../../models/presentation-summary.model';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-history',
@@ -18,12 +19,16 @@ import { PresentationSummary } from '../../models/presentation-summary.model';
     MatButtonModule,
     MatTableModule,
     MatSortModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    RouterModule
   ],
   templateUrl: './history.component.html',
   styleUrls: ['./history.component.css']
 })
+
 export class HistoryComponent implements AfterViewInit {
+  constructor(private router: Router) {}
+
   displayedColumns: string[] = ['presentation', 'date', 'emotion', 'action', 'favorite'];
 
   dataSource = new MatTableDataSource<PresentationSummary>([
@@ -57,5 +62,10 @@ export class HistoryComponent implements AfterViewInit {
   toggleFavorite(element: any): void {
   element.favorite = !element.favorite;
 }
+
+goToFeedback(): void {
+  this.router.navigate(['/design/feedback-config']);
+}
+
 
 }
