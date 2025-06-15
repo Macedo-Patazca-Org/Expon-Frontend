@@ -38,4 +38,13 @@ export class AuthService {
   isLoggedIn(): boolean {
     return !!localStorage.getItem('token');
   }
+
+  recoverPassword(newPassword: string): Observable<any> {
+    if (!newPassword || newPassword.length < 6) {
+      return throwError(() => new Error('La contraseña debe tener al menos 6 caracteres'));
+    }
+
+    // Simulación de actualización
+    return of({ message: 'Contraseña actualizada correctamente' });
+  }
 }

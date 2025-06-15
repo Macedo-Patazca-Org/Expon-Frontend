@@ -14,6 +14,10 @@
   height: 100vh;
   /*background: linear-gradient(to right, #f0f0f0 50%, #66c2ff 50%);*/
   width: 50vw;
+  background-image: url('/assets/images/wave-bg-img.png');
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: bottom;
 }
 
 .login-form-container{
@@ -140,6 +144,19 @@
     height: 100vh;
   }
 
+  .container-login::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 40vh;
+  background: url('/assets/images/wave-bg-img.png') no-repeat bottom center;
+  background-size: contain;
+  z-index: 0;
+  pointer-events: none;
+}
+
   .login-container {
     width: 100%;
     height: 100%;
@@ -163,9 +180,10 @@
 
   .login-form {
     width: 100%;
+    background-color: rgba(255, 255, 255, 0.78); /* semitransparente */
+    backdrop-filter: blur(10px); /* desenfoque de fondo */
+    -webkit-backdrop-filter: blur(10px); /* para Safari */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     border-radius: 10px;
-    padding: 2rem;
-    background-color: rgba(255, 255, 255, 0.85);
   }
 }

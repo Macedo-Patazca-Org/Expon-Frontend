@@ -11,6 +11,12 @@
   align-items: center;
   height: 100vh;
   width: 50vw;
+
+  /* Fondo onda escritorio */
+  background-image: url('/assets/images/wave-bg-img.png');
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: bottom;
 }
 
 .register-form-container {
@@ -127,6 +133,20 @@
     height: 100vh;
   }
 
+  .container-register::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 40vh;
+  background: url('/assets/images/wave-bg-img.png') no-repeat bottom center;
+  background-size: contain;
+  z-index: 0;
+  pointer-events: none;
+}
+
+
   .register-container {
     width: 100%;
     height: 100%;
@@ -150,9 +170,10 @@
 
   .register-form {
     width: 100%;
+    background-color: rgba(255, 255, 255, 0.78); /* semitransparente */
+    backdrop-filter: blur(10px); /* desenfoque de fondo */
+    -webkit-backdrop-filter: blur(10px); /* para Safari */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     border-radius: 10px;
-    padding: 2rem;
-    background-color: rgba(255, 255, 255, 0.85);
   }
 }
