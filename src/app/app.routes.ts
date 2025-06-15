@@ -7,6 +7,7 @@ import { AboutComponent } from './public/pages/about/about/about.component';
 // Authentication
 import { LoginComponent } from './authentication/pages/login/login/login.component';
 import { RegisterComponent } from './authentication/pages/register/register/register.component';
+import { RecoverPasswordComponent } from './authentication/pages/recover-password/recover-password.component';
 
 // Subscriptions
 import { CheckoutComponent } from './subscriptions/pages/checkout/checkout/checkout.component';
@@ -39,6 +40,7 @@ export const routes: Routes = [
   // Rutas sin dashboard
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
+  {path: 'recover-password', component: RecoverPasswordComponent},
 
   // Rutas con dashboard layout
   {
