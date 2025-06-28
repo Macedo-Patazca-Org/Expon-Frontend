@@ -12,8 +12,10 @@ import { Profile } from '../../../models/profile.model';
   templateUrl: './profile-edit.component.html',
   styleUrls: ['./profile-edit.component.css']
 })
+
 export class ProfileEditComponent implements OnInit {
   profileForm!: FormGroup;
+  profileExists = false; // Variable para marcar si el perfil existe o no
 
   constructor(private fb: FormBuilder, private profileService: ProfileService) {}
 
@@ -31,11 +33,13 @@ export class ProfileEditComponent implements OnInit {
 
     this.profileService.getMyProfile().subscribe({
       next: (profile: Profile) => {
+        this.profileExists = true; // marcar que existe
         this.profileForm.patchValue(profile);
       },
       error: (err) => {
         if (err.status === 404) {
           console.warn('Perfil no encontrado. Se puede crear uno nuevo.');
+          this.profileExists = false; // marcar que no existe
         } else {
           console.error('Error al obtener el perfil:', err);
         }
@@ -45,26 +49,21 @@ export class ProfileEditComponent implements OnInit {
 
   onSubmit(): void {
     if (this.profileForm.valid) {
-      this.profileService.getMyProfile().subscribe({
-        next: () => {
-          // Si existe, actualiza
-          this.profileService.updateProfile(this.profileForm.value).subscribe({
-            next: () => console.log('Perfil actualizado con éxito'),
-            error: (err) => console.error('Error al actualizar perfil:', err)
-          });
-        },
-        error: (err) => {
-          if (err.status === 404) {
-            // Si no existe, crea uno nuevo
-            this.profileService.createProfile(this.profileForm.value).subscribe({
-              next: () => console.log('Perfil creado con éxito'),
-              error: (createErr) => console.error('Error al crear perfil:', createErr)
-            });
-          } else {
-            console.error('Error al verificar existencia del perfil:', err);
-          }
-        }
-      });
+      if (this.profileExists) {
+        this.profileService.updateProfile(this.profileForm.value).subscribe({
+          next: () => console.log('Perfil actualizado con éxito'),
+          error: (err) => console.error('Error al actualizar perfil:', err)
+        });
+      } else {
+        this.profileService.createProfile(this.profileForm.value).subscribe({
+          next: () => {
+            console.log('Perfil creado con éxito');
+            this.profileExists = true; // actualizar estado interno
+          },
+          error: (err) => console.error('Error al crear perfil:', err)
+        });
+      }
     }
   }
 }
+

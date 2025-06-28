@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class ProfileService {
-  private readonly baseUrl = 'http://localhost:8000/api/v1/profile/profile';
+  private readonly baseUrl = 'http://localhost:8000/api/v1/profile';
 
   constructor(private http: HttpClient) {}
 
