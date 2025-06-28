@@ -1,50 +1,66 @@
 import { Injectable } from '@angular/core';
-import { Observable, of, throwError } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { Profile } from '../../user-profile/models/profile.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
+  private loginUrl = 'http://localhost:8000/api/v1/auth/login';
+  private registerUrl = 'http://localhost:8000/api/v1/auth/signup';
+  private recoverUrl = 'http://localhost:8000/api/v1/auth/recover-password'; 
+  private meUrl = 'http://localhost:8000/api/v1/auth/me';
+
+  constructor(private http: HttpClient) {}
+
   login(credentials: { email: string; password: string }): Observable<any> {
-    if (credentials.email === 'admin@expon.com' && credentials.password === '123456') {
-      localStorage.setItem('token', 'FAKE-TOKEN');
-      return of({
-        token: 'FAKE-TOKEN',
-        user: { name: 'Admin' }
-      });
-    } else {
-      return throwError(() => new Error('Credenciales inválidas'));
-    }
+    return this.http.post(this.loginUrl, credentials);
   }
 
   register(user: { username: string; email: string; password: string }): Observable<any> {
-    if (user.username && user.email && user.password) {
-      return of({
-        message: 'Registro exitoso',
-        user: {
-          username: user.username,
-          email: user.email
-        }
-      });
-    } else {
-      return throwError(() => new Error('Todos los campos son obligatorios'));
-    }
-  }
-
-  logout(): void {
-    localStorage.removeItem('token');
-  }
-
-  isLoggedIn(): boolean {
-    return !!localStorage.getItem('token');
+    return this.http.post(this.registerUrl, user);
   }
 
   recoverPassword(newPassword: string): Observable<any> {
-    if (!newPassword || newPassword.length < 6) {
-      return throwError(() => new Error('La contraseña debe tener al menos 6 caracteres'));
-    }
+    return this.http.post(this.recoverUrl, { password: newPassword });
+  }
 
-    // Simulación de actualización
-    return of({ message: 'Contraseña actualizada correctamente' });
+  getCurrentUser(): Observable<Profile> {
+    const token = this.getToken();
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+    return this.http.get<Profile>(this.meUrl, { headers });
+  }
+
+  saveToken(token: string): void {
+    localStorage.setItem('access_token', token);
+  }
+
+  getToken(): string | null {
+    return localStorage.getItem('access_token');
+  }
+
+  logout(): void {
+    localStorage.removeItem('access_token');
+  }
+
+  isLoggedIn(): boolean {
+    return !!this.getToken() && !this.isTokenExpired();
+  }
+
+  isTokenExpired(): boolean {
+    const token = this.getToken();
+    if (!token) return true;
+
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const expiry = payload.exp;
+      const now = Math.floor(Date.now() / 1000);
+      return expiry < now;
+    } catch (e) {
+      return true; // token malformado
+    }
   }
 }

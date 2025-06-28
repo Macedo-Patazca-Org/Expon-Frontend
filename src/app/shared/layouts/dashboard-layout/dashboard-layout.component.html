@@ -17,7 +17,7 @@
       </div>
 
       <nav class="menu">
-        <a routerLink="/" title="Home">
+        <a routerLink="/home" title="Home">
           <i class="fas fa-home"></i>
           <span *ngIf="!isCollapsed">Home</span>
         </a>
@@ -48,10 +48,11 @@
         <button class="plan-button" routerLink="/subscriptions/plans">Active plan</button>
       </div> -->
 
-      <button class="logout" routerLink="/login">
+      <button class="logout" (click)="logout()">
         <i class="fas fa-sign-out-alt"></i>
         <span *ngIf="!isCollapsed">Sign out</span>
       </button>
+      
     </div>
   </aside>
 

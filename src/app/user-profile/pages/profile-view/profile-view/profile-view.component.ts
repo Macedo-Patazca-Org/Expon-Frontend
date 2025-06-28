@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { User } from '../../../models/user.model';
-import { RouterModule } from '@angular/router';
-
+import { RouterModule, Router } from '@angular/router';
+import { ProfileService } from '../../../services/profile.service';
+import { Profile } from '../../../models/profile.model';
 
 @Component({
   selector: 'app-profile-view',
@@ -12,15 +12,32 @@ import { RouterModule } from '@angular/router';
   styleUrls: ['./profile-view.component.css']
 })
 export class ProfileViewComponent implements OnInit {
-  user: User = {
-    id: 1,
-    email: 'luis.perez@example.com',
-    name: 'Luis',
-    lastname: 'Perez',
-    // Puedes añadir más propiedades según tu modelo (gender, plan, etc.)
-  };
+  profile: Profile | null = null;
+  errorMessage = '';
+  isLoading = true;
+
+  constructor(
+    private profileService: ProfileService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
-    // En el futuro puedes cargarlo desde un servicio
+    this.profileService.getMyProfile().subscribe({
+      next: (data) => {
+        this.profile = data;
+        this.isLoading = false;
+      },
+      error: (error) => {
+        this.isLoading = false;
+
+        if (error.status === 404) {
+          console.warn('Perfil no encontrado. Redirigiendo a creación...');
+          this.router.navigate(['/profile/edit']);
+        } else {
+          console.error('Error al obtener el perfil:', error);
+          this.errorMessage = 'No se pudo cargar el perfil del usuario.';
+        }
+      }
+    });
   }
 }

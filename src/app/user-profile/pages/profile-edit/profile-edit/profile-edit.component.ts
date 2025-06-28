@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { User } from '../../../models/user.model';
+import { ProfileService } from '../../../services/profile.service';
+import { Profile } from '../../../models/profile.model';
 
 @Component({
   selector: 'app-profile-edit',
@@ -14,24 +15,56 @@ import { User } from '../../../models/user.model';
 export class ProfileEditComponent implements OnInit {
   profileForm!: FormGroup;
 
-  constructor(private fb: FormBuilder) {}
+  constructor(private fb: FormBuilder, private profileService: ProfileService) {}
 
   ngOnInit(): void {
     this.profileForm = this.fb.group({
-      name: ['Luis'],
-      lastname: ['Perez'],
-      email: ['luis.perez@example.com'],
-      password: [''],
-      gender: ['Male'],
-      picturePath: ['/assets/images/avatar-img.png'],
-      preference: ['Formal']
+      full_name: [''],
+      university: [''],
+      career: [''],
+      first_name: [''],
+      last_name: [''],
+      gender: [''],
+      profile_picture: [''],
+      preferred_presentation: ['']
+    });
+
+    this.profileService.getMyProfile().subscribe({
+      next: (profile: Profile) => {
+        this.profileForm.patchValue(profile);
+      },
+      error: (err) => {
+        if (err.status === 404) {
+          console.warn('Perfil no encontrado. Se puede crear uno nuevo.');
+        } else {
+          console.error('Error al obtener el perfil:', err);
+        }
+      }
     });
   }
 
   onSubmit(): void {
     if (this.profileForm.valid) {
-      console.log('Updated user:', this.profileForm.value);
-      // Aquí iría la lógica para guardar cambios
+      this.profileService.getMyProfile().subscribe({
+        next: () => {
+          // Si existe, actualiza
+          this.profileService.updateProfile(this.profileForm.value).subscribe({
+            next: () => console.log('Perfil actualizado con éxito'),
+            error: (err) => console.error('Error al actualizar perfil:', err)
+          });
+        },
+        error: (err) => {
+          if (err.status === 404) {
+            // Si no existe, crea uno nuevo
+            this.profileService.createProfile(this.profileForm.value).subscribe({
+              next: () => console.log('Perfil creado con éxito'),
+              error: (createErr) => console.error('Error al crear perfil:', createErr)
+            });
+          } else {
+            console.error('Error al verificar existencia del perfil:', err);
+          }
+        }
+      });
     }
   }
 }

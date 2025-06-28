@@ -7,3 +7,24 @@ body {
 }
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.snackbar-warning {
+  background-color: #f44336; /* rojo fuerte */
+  color: white;
+  font-weight: 500;
+  text-align: center;
+}
+
+.snackbar-success {
+  background-color: #4caf50; /* verde éxito */
+  color: white;
+  font-weight: 500;
+  text-align: center;
+}
+
+.snackbar-error {
+  background-color: #e53935; /* rojo error */
+  color: white;
+  font-weight: 500;
+  text-align: center;
+}

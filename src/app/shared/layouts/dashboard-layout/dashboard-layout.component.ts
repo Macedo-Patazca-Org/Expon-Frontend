@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule, RouterOutlet } from '@angular/router';
+import { RouterModule, RouterOutlet, Router } from '@angular/router';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { AuthService } from '../../../authentication/services/auth.service';
 
 @Component({
   selector: 'app-dashboard-layout',
@@ -12,11 +14,14 @@ import { RouterModule, RouterOutlet } from '@angular/router';
 export class DashboardLayoutComponent implements OnInit {
   isCollapsed = false;
 
-  ngOnInit(): void {
-    // Detectar tamaño de pantalla
-    this.isCollapsed = window.innerWidth < 1024;
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private snackBar: MatSnackBar
+  ) {}
 
-    // Escuchar cambios en el tamaño de ventana
+  ngOnInit(): void {
+    this.isCollapsed = window.innerWidth < 1024;
     window.addEventListener('resize', () => {
       this.isCollapsed = window.innerWidth < 1024;
     });
@@ -24,5 +29,14 @@ export class DashboardLayoutComponent implements OnInit {
 
   toggleSidebar(): void {
     this.isCollapsed = !this.isCollapsed;
+  }
+
+  logout(): void {
+    this.authService.logout();
+    this.snackBar.open('Sesión cerrada exitosamente', 'Cerrar', {
+      duration: 3000,
+      panelClass: ['snackbar-success']
+    });
+    this.router.navigate(['/login']);
   }
 }

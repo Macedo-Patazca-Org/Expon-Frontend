@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../services/auth.service';
+import { Router } from '@angular/router'; 
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-register',
@@ -19,18 +21,25 @@ export class RegisterComponent {
 
   errorMessage: string = '';
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private router: Router, private snackBar: MatSnackBar) {} 
 
   onSubmit(): void {
-    this.authService.register(this.user).subscribe({
-      next: (response) => {
-        console.log('Registro exitoso:', response);
-        this.errorMessage = '';
-        // Aquí podrías redirigir al login o al dashboard
-      },
-      error: (error) => {
-        this.errorMessage = error.message;
-      }
-    });
-  }
+  this.authService.register(this.user).subscribe({
+    next: (response) => {
+      this.snackBar.open('Registro exitoso. ¡Bienvenido!', 'Cerrar', {
+        duration: 3000,
+        panelClass: ['snackbar-success']
+      });
+      this.router.navigate(['/login']);
+    },
+    error: (error) => {
+      const msg = error.error?.detail || 'Error al registrarse.';
+      this.snackBar.open(msg, 'Cerrar', {
+        duration: 4000,
+        panelClass: ['snackbar-error']
+      });
+    }
+  });
+}
+
 }
