@@ -1,7 +1,7 @@
 export interface Presentation {
-  id: number;
-  title: string;
-  date: string;
-  image: string;
-  userId: number;
+  id: string;
+  filename: string;
+  dominant_emotion: string;
+  confidence: number;
+  created_at: string;
 }

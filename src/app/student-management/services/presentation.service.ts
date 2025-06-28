@@ -3,12 +3,13 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { AudioUploadResponse } from '../../student-management/models/audio-response.model';
 import { EmotionSummary } from '../../student-management/models/emotion.model';
+import { Presentation } from '../../student-management/models/presentation.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PresentationService {
-  private readonly API_URL = 'http://localhost:3000/api'; // ⬅️ Cambiar luego por la URL real del backend
+  private readonly API_URL = 'http://localhost:8000/api';
 
   constructor(private http: HttpClient) {}
 
@@ -22,5 +23,8 @@ export class PresentationService {
     return this.http.get<EmotionSummary>(`${this.API_URL}/presentations/${presentationId}/emotion-summary`);
   }
 
-  // Opcional: podrías añadir métodos como guardar o listar presentaciones
+  getPresentationSummaries(): Observable<Presentation[]> {
+    return this.http.get<Presentation[]>(`${this.API_URL}/v1/presentation/summary`);
+  }
+
 }
