@@ -1,41 +1,39 @@
 <h2 class="title">Feedback</h2>
 <h3 class="subtitle">This is a summary of your presentation.</h3>
 
-<div class="feedback-grid">
+<div *ngIf="loading">Loading feedback...</div>
+<div *ngIf="error">❌ Could not load feedback.</div>
 
+<div class="feedback-grid" *ngIf="feedbackData">
   <div class="feedback-block">
     <h4>SENTIMENT ANALYSIS</h4>
-    <p>Overall Sentiment: Positive</p>
-    <img src="assets/images/sentiment-chart-img.png" alt="Sentiment chart">
+    <p>{{ feedbackData.general_feedback }}</p>
   </div>
 
   <div class="feedback-block">
     <h4>CONFIDENCE LEVEL</h4>
-    <p>Confidence: 85%</p>
-    <img src="assets/images/confidence-bar-img.png" alt="Confidence chart">
+    <p>{{ feedbackData.confidence_feedback }}</p>
   </div>
 
   <div class="feedback-block">
     <h4>ANXIETY LEVEL</h4>
-    <p>Anxiety: 30%</p>
-    <img src="assets/images/anxiety-bar-img.png" alt="Anxiety chart">
+    <p>{{ feedbackData.anxiety_feedback }}</p>
   </div>
 
   <div class="feedback-block">
     <h4>LANGUAGE FEEDBACK</h4>
-    <p>We've noticed informal expressions like 'cool' or 'wow'. Consider replacing them with terms like 'adequate' or 'interesting'.</p>
+    <p>{{ feedbackData.language_feedback }}</p>
   </div>
 
   <div class="feedback-block">
     <h4>SUGGESTIONS FOR IMPROVEMENT</h4>
-    <p>Use logical connectors ('therefore', 'furthermore') to better structure your ideas.</p>
+    <p>{{ feedbackData.suggestions }}</p>
   </div>
 
   <div class="feedback-block">
     <h4>How did you feel when presenting?</h4>
     <textarea placeholder="Write your feelings here..."></textarea>
   </div>
-
 </div>
 
 <div class="feedback-actions">

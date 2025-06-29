@@ -30,10 +30,17 @@
         <div class="icon-wrapper">
           <mat-icon fontIcon="mic" class="record-icon"></mat-icon>
         </div>
-        <button mat-raised-button color="primary" class="record-btn">
-          Start recording audio
+        <button *ngIf="!isRecording" mat-raised-button color="primary" class="record-btn" (click)="startRecording()">
+          🎤 Start recording audio
+        </button>
+        <button *ngIf="isRecording" mat-raised-button color="warn" class="record-btn" (click)="stopRecording()">
+          ⏹ Stop & upload
         </button>
       </div>
+    </div>
+    <!-- ⏱️ GRABACIÓN EN CURSO -->
+    <div *ngIf="isRecording && !isLoading" class="recording-indicator">
+      🔴 Recording... <strong>{{ recordingTime }}s</strong>
     </div>
 
     <p class="or-separator">OR</p>
@@ -52,5 +59,11 @@
     <p class="selected-file" *ngIf="selectedFile">
       File selected: {{ selectedFile.name }}
     </p>
+  </div>
+
+  <!-- 🔄 MODAL DE CARGA -->
+  <div *ngIf="isLoading" class="loading-overlay">
+    <mat-spinner diameter="60"></mat-spinner>
+    <p>Processing your presentation...</p>
   </div>
 </div>
