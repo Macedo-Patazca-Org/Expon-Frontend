@@ -27,4 +27,12 @@ export class PresentationService {
     return this.http.get<Presentation[]>(`${this.API_URL}/v1/presentation/summary`);
   }
 
+  generateFeedback(presentationId: string): Observable<any> {
+    return this.http.post(`${this.API_URL}/v1/feedback/`, { presentation_id: presentationId });
+  }
+
+  getFeedbackByPresentationId(presentationId: string): Observable<any> {
+    return this.http.get(`${this.API_URL}/v1/feedback/presentation/${presentationId}`);
+  }
+
 }

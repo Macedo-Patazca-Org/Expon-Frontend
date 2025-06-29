@@ -64,7 +64,7 @@ export const routes: Routes = [
       { path: 'history', component: HistoryComponent },
 
       { path: 'design/template', component: TemplateConfigComponent },
-      { path: 'design/feedback-config', component: CustomizeFeedbackComponent },
+      { path: 'design/feedback-config/:id', component: CustomizeFeedbackComponent },
 
       { path: 'monitoring/live', component: LiveMonitoringComponent },
       { path: 'monitoring/emotion', component: EmotionTrackingComponent },

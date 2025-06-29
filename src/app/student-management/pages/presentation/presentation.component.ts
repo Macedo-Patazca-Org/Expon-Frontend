@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { ChangeDetectorRef } from '@angular/core';
+import { Router } from '@angular/router';
 
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
@@ -11,7 +13,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialogModule } from '@angular/material/dialog';
 
-import { ChangeDetectorRef } from '@angular/core';
+
 
 import { PresentationService } from '../../services/presentation.service';
 
@@ -50,7 +52,8 @@ export class PresentationComponent {
 
 constructor(
   private presentationService: PresentationService,
-  private cdr: ChangeDetectorRef
+  private cdr: ChangeDetectorRef,
+  private router: Router
 ) {}
 
 
@@ -76,15 +79,26 @@ constructor(
     this.presentationService.uploadPresentation(this.selectedFile).subscribe({
       next: (res) => {
         console.log('✅ Response from backend:', res);
-        this.uploadResult = res;
-        this.isLoading = false;
-        this.cdr.detectChanges();
+        const id = res.id;
+
+        // Generar feedback antes de redirigir
+        this.presentationService.generateFeedback(id).subscribe({
+          next: () => {
+            this.isLoading = false;
+            this.router.navigate(['/design/feedback-config', id]);
+            this.cdr.detectChanges();
+          },
+          error: (err) => {
+            console.error('❌ Error generating feedback:', err);
+            this.uploadError = true;
+            this.isLoading = false;
+          }
+        });
       },
       error: (err) => {
         console.error('❌ Error uploading presentation:', err);
         this.uploadError = true;
         this.isLoading = false;
-        this.cdr.detectChanges();
       }
     });
   }
