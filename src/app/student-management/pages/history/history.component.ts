@@ -42,6 +42,7 @@ export class HistoryComponent implements OnInit, AfterViewInit {
     this.presentationService.getPresentationSummaries().subscribe({
       next: (data: Presentation[]) => {
         const mapped = data.map(p => ({
+          id: p.id,
           title: p.filename,
           date: this.formatDate(p.created_at),
           emotion: p.dominant_emotion,
@@ -68,8 +69,8 @@ export class HistoryComponent implements OnInit, AfterViewInit {
     element.favorite = !element.favorite;
   }
 
-  goToFeedback(): void {
-    this.router.navigate(['/design/feedback-config']);
+  goToFeedback(presentationId: string): void {
+    this.router.navigate(['/design/feedback-config', presentationId]);
   }
 
   playAudio(audioUrl: string) {

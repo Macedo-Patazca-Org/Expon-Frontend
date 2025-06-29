@@ -18,16 +18,17 @@ export class HomeComponent implements OnInit {
     private presentationService: PresentationService
   ) {}
 
-  presentations: { title: string; date: string; image: string }[] = [];
+  presentations: { id: string; title: string; date: string; image: string }[] = [];
   emotionSummary: { [key: string]: number } = {};
 
   ngOnInit(): void {
     this.presentationService.getPresentationSummaries().subscribe({
       next: (data: Presentation[]) => {
         this.presentations = data.map(p => ({
+          id: p.id,
           title: p.filename,
           date: this.timeAgo(p.created_at),
-          image: 'https://cdn.prod.website-files.com/63ca9a05fdc83042565f605c/66a23e2154e5e054fff4f169_outline_blog.jpg' // imagen por defecto
+          image: 'https://cdn.prod.website-files.com/63ca9a05fdc83042565f605c/66a23e2154e5e054fff4f169_outline_blog.jpg'
         }));
 
         const emotionCounts: { [key: string]: number } = {};
@@ -63,7 +64,8 @@ export class HomeComponent implements OnInit {
     this.router.navigate(['/presentations']);
   }
 
-  goToFeedbackConfig(): void {
-    this.router.navigate(['/design/feedback-config']);
+  goToFeedbackConfig(id: string): void {
+    this.router.navigate(['/design/feedback-config', id]);
   }
+
 }

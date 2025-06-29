@@ -28,7 +28,7 @@
             <ng-container matColumnDef="action">
             <mat-header-cell *matHeaderCellDef>Action</mat-header-cell>
             <mat-cell *matCellDef="let element">
-                <button mat-raised-button color="accent" class="view-report-btn" (click)="goToFeedback()">
+                <button mat-raised-button color="accent" class="view-report-btn" (click)="goToFeedback(element.id)">
                     <span class="btn-text-report">Ver informe</span>
                 </button>
 
