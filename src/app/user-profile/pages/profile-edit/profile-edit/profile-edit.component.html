@@ -7,23 +7,28 @@
     <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" class="form-grid">
 
       <div class="form-group">
-        <label>Name</label>
-        <input type="text" formControlName="name" />
+        <label>Full Name</label>
+        <input type="text" formControlName="full_name" />
+      </div>
+
+      <div class="form-group">
+        <label>First Name</label>
+        <input type="text" formControlName="first_name" />
       </div>
 
       <div class="form-group">
         <label>Last Name</label>
-        <input type="text" formControlName="lastname" />
+        <input type="text" formControlName="last_name" />
       </div>
 
       <div class="form-group">
-        <label>Email</label>
-        <input type="email" formControlName="email" />
+        <label>University</label>
+        <input type="text" formControlName="university" />
       </div>
 
       <div class="form-group">
-        <label>Password</label>
-        <input type="password" formControlName="password" />
+        <label>Career</label>
+        <input type="text" formControlName="career" />
       </div>
 
       <div class="form-group">
@@ -37,13 +42,13 @@
       </div>
 
       <div class="form-group">
-        <label>Profile picture</label>
-        <input type="text" formControlName="picturePath" placeholder="Upload profile picture" />
+        <label>Profile Picture</label>
+        <input type="text" formControlName="profile_picture" placeholder="URL of your picture" />
       </div>
 
       <div class="form-group">
-        <label>Preferred presentation type</label>
-        <select formControlName="preference">
+        <label>Preferred Presentation</label>
+        <select formControlName="preferred_presentation">
           <option value="" disabled>Select preference</option>
           <option>Formal</option>
           <option>Casual</option>
@@ -51,15 +56,8 @@
         </select>
       </div>
 
-      <div class="form-group">
-        <label>Account</label>
-        <button type="button" class="delete-btn">
-          <i class="fas fa-trash-alt"></i> Delete your account
-        </button>
-      </div>
-
       <div class="edit-button-container full-width">
-        <a routerLink="/profile" class="edit-button">Save</a>
+        <button type="submit" class="edit-button">Save</button>
       </div>
 
     </form>

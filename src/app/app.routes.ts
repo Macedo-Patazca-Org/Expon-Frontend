@@ -35,10 +35,11 @@ import { EmotionTrackingComponent } from './emotion-monitoring/pages/emotion-tra
 import { OverviewComponent } from './analytics/pages/overview/overview/overview.component';
 import { UserProgressComponent } from './analytics/pages/user-progress/user-progress/user-progress.component';
 import { DashboardLayoutComponent } from './shared/layouts/dashboard-layout/dashboard-layout.component';
+import { authGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
   // Rutas sin dashboard
-  { path: 'login', component: LoginComponent },
+  { path: '', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   {path: 'recover-password', component: RecoverPasswordComponent},
 
@@ -46,8 +47,9 @@ export const routes: Routes = [
   {
     path: '',
     component: DashboardLayoutComponent,
+    canActivate: [authGuard],
     children: [
-      { path: '', component: HomeComponent },
+      { path: 'home', component: HomeComponent },
       { path: 'about', component: AboutComponent },
 
       { path: 'subscriptions/checkout', component: CheckoutComponent },

@@ -187,3 +187,15 @@
     border-radius: 10px;
   }
 }
+
+.snackbar-success {
+  background-color: #4caf50; /* verde */
+  color: white;
+  font-weight: 500;
+}
+
+.snackbar-error {
+  background-color: #f44336; /* rojo */
+  color: white;
+  font-weight: 500;
+}
