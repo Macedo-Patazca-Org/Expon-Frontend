@@ -13,10 +13,10 @@ export class PresentationService {
 
   constructor(private http: HttpClient) {}
 
-  uploadAudio(file: File): Observable<AudioUploadResponse> {
+  uploadPresentation(file: File): Observable<any> {
     const formData = new FormData();
-    formData.append('audio', file);
-    return this.http.post<AudioUploadResponse>(`${this.API_URL}/presentations/upload`, formData);
+    formData.append('file', file);
+    return this.http.post<any>(`${this.API_URL}/v1/presentation/upload`, formData);
   }
 
   getEmotionSummary(presentationId: number): Observable<EmotionSummary> {
