@@ -7,10 +7,10 @@ import { Profile } from '../../user-profile/models/profile.model';
   providedIn: 'root'
 })
 export class AuthService {
-  private loginUrl = 'http://localhost:8000/api/v1/auth/login';
-  private registerUrl = 'http://localhost:8000/api/v1/auth/signup';
-  private recoverUrl = 'http://localhost:8000/api/v1/auth/recover-password'; 
-  private meUrl = 'http://localhost:8000/api/v1/auth/me';
+  private loginUrl = 'https://ideal-merry-primate.ngrok-free.app/api/v1/auth/login';
+  private registerUrl = 'https://ideal-merry-primate.ngrok-free.app/api/v1/auth/signup';
+  private recoverUrl = 'https://ideal-merry-primate.ngrok-free.app/api/v1/auth/recover-password'; 
+  private meUrl = 'https://ideal-merry-primate.ngrok-free.app/api/v1/auth/me';
 
   constructor(private http: HttpClient) {}
 

@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class ProfileService {
-  private readonly baseUrl = 'http://localhost:8000/api/v1/profile';
+  private readonly baseUrl = 'https://ideal-merry-primate.ngrok-free.app';
 
   constructor(private http: HttpClient) {}
 
