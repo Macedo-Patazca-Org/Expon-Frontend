@@ -1,1 +1,42 @@
-<p>customize-feedback works!</p>
+<h2 class="title">Feedback</h2>
+<h3 class="subtitle">This is a summary of your presentation.</h3>
+
+<div *ngIf="loading">Loading feedback...</div>
+<div *ngIf="error">❌ Could not load feedback.</div>
+
+<div class="feedback-grid" *ngIf="feedbackData">
+  <div class="feedback-block">
+    <h4>SENTIMENT ANALYSIS</h4>
+    <p>{{ feedbackData.general_feedback }}</p>
+  </div>
+
+  <div class="feedback-block">
+    <h4>CONFIDENCE LEVEL</h4>
+    <p>{{ feedbackData.confidence_feedback }}</p>
+  </div>
+
+  <div class="feedback-block">
+    <h4>ANXIETY LEVEL</h4>
+    <p>{{ feedbackData.anxiety_feedback }}</p>
+  </div>
+
+  <div class="feedback-block">
+    <h4>LANGUAGE FEEDBACK</h4>
+    <p>{{ feedbackData.language_feedback }}</p>
+  </div>
+
+  <div class="feedback-block">
+    <h4>SUGGESTIONS FOR IMPROVEMENT</h4>
+    <p>{{ feedbackData.suggestions }}</p>
+  </div>
+
+  <div class="feedback-block">
+    <h4>How did you feel when presenting?</h4>
+    <textarea placeholder="Write your feelings here..."></textarea>
+  </div>
+</div>
+
+<div class="feedback-actions">
+  <a routerLink="/" class="link-button">Go to the Home</a>
+  <button mat-flat-button class="download-button">Download report</button>
+</div>

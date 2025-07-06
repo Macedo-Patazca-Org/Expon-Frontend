@@ -1,1 +1,60 @@
-<p>profile-view works!</p>
+<div class="configuration-container">
+  <h2>Configuration</h2>
+
+  <div class="profile-settings-card">
+    <h3>PROFILE SETTINGS</h3>
+
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Full Name</label>
+        <div class="readonly-box">{{ profile?.full_name }}</div>
+      </div>
+
+      <div class="form-group">
+        <label>University</label>
+        <div class="readonly-box">{{ profile?.university }}</div>
+      </div>
+
+      <div class="form-group">
+        <label>Career</label>
+        <div class="readonly-box">{{ profile?.career }}</div>
+      </div>
+
+      <div class="form-group">
+        <label>First Name</label>
+        <div class="readonly-box">{{ profile?.first_name }}</div>
+      </div>
+
+      <div class="form-group">
+        <label>Last Name</label>
+        <div class="readonly-box">{{ profile?.last_name }}</div>
+      </div>
+
+      <div class="form-group">
+        <label>Gender</label>
+        <div class="readonly-box">{{ profile?.gender }}</div>
+      </div>
+
+      <div class="form-group">
+        <label>Profile Picture</label>
+        <div class="readonly-box">{{ profile?.profile_picture }}</div>
+      </div>
+
+      <div class="form-group">
+        <label>Preferred Presentation</label>
+        <div class="readonly-box">{{ profile?.preferred_presentation }}</div>
+      </div>
+
+      <div class="form-group">
+        <label>Account</label>
+        <button class="delete-btn">
+          <i class="fas fa-trash-alt"></i> Delete your account
+        </button>
+      </div>
+    </div>
+
+    <div class="edit-button-container">
+      <a routerLink="/profile/edit" class="edit-button">Edit</a>
+    </div>
+  </div>
+</div>

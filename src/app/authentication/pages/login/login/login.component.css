@@ -1,0 +1,201 @@
+/* Contenedor general */
+
+.container-login{
+    display: flex;
+    width: 100%;
+    /*justify-content: center;*/
+    justify-content: space-between;
+}
+
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  /*background: linear-gradient(to right, #f0f0f0 50%, #66c2ff 50%);*/
+  width: 50vw;
+  background-image: url('/assets/images/wave-bg-img.png');
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: bottom;
+}
+
+.login-form-container{
+    display: flex;
+    width: 100%;
+    justify-content: center;
+}
+/* Formulario */
+.login-form {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 8px;
+  width: 320px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.login-form h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+}
+
+/* Inputs */
+.login-form input[type="email"],
+.login-form input[type="password"] {
+  width: 100%;
+  padding: 0.6rem;
+  margin: 0.5rem 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+/* Botón */
+.login-form button {
+  width: 100%;
+  padding: 0.7rem;
+  margin-top: 1rem;
+  background-color: #1abc9c;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.login-form button:hover {
+  background-color: #16a085;
+}
+
+/* Error */
+.error-message {
+  color: red;
+  margin-top: 0.5rem;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+/* Fondo ilustración */
+.login-illustration {
+  flex: 1;
+  background-image: url('/assets/images/login-illustration.png'); /* reemplaza con tu ruta */
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.login-img img {
+    background-size: cover;
+}
+
+.login-img {
+    background-image: url('/assets/images/login-img.png'); 
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 100%;
+    height: 100vh;
+    min-height: 400px; 
+    max-width: 50vw;
+}
+
+.login-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+}
+
+.forgot-password {
+  color: #3498db;
+  text-decoration: none;
+}
+
+.forgot-password:hover {
+  text-decoration: underline;
+}
+
+.signup-link {
+  text-align: center;
+  margin-top: 1rem;
+  font-size: 0.85rem;
+}
+
+.signup-link a {
+  color: #1abc9c;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+/* Responsive */
+@media screen and (max-width: 768px) {
+  .container-login {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    background-image: url('/assets/images/login-img.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 100vh;
+  }
+
+  .container-login::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 40vh;
+  background: url('/assets/images/wave-bg-img.png') no-repeat bottom center;
+  background-size: contain;
+  z-index: 0;
+  pointer-events: none;
+}
+
+  .login-container {
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    background-color: rgba(255, 255, 255, 0);
+  }
+
+  .login-img,
+  .login-illustration {
+    display: none;
+  }
+
+  .login-form-container {
+    width: 90%;
+    max-width: 400px;
+    padding: 1rem;
+    z-index: 1;
+  }
+
+  .login-form {
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.78); /* semitransparente */
+    backdrop-filter: blur(10px); /* desenfoque de fondo */
+    -webkit-backdrop-filter: blur(10px); /* para Safari */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+  }
+}
+
+.snackbar-success {
+  background-color: #4caf50; /* verde */
+  color: white;
+  font-weight: 500;
+}
+
+.snackbar-error {
+  background-color: #f44336; /* rojo */
+  color: white;
+  font-weight: 500;
+}

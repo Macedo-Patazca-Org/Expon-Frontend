@@ -1,1 +1,30 @@
 /* You can add global styles to this file, and also import other style files */
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.snackbar-warning {
+  background-color: #f44336; /* rojo fuerte */
+  color: white;
+  font-weight: 500;
+  text-align: center;
+}
+
+.snackbar-success {
+  background-color: #4caf50; /* verde éxito */
+  color: white;
+  font-weight: 500;
+  text-align: center;
+}
+
+.snackbar-error {
+  background-color: #e53935; /* rojo error */
+  color: white;
+  font-weight: 500;
+  text-align: center;
+}
