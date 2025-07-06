@@ -9,7 +9,7 @@ import { Presentation } from '../../student-management/models/presentation.model
   providedIn: 'root'
 })
 export class PresentationService {
-  private readonly API_URL = 'https://ideal-merry-primate.ngrok-free.app';
+  private readonly API_URL = 'https://ideal-merry-primate.ngrok-free.app/api';
 
   constructor(private http: HttpClient) {}
 
