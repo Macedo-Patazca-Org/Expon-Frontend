@@ -13,7 +13,8 @@
 
       <div class="profile" *ngIf="!isCollapsed">
         <img src="/assets/images/avatar-img.png" alt="User Avatar" class="avatar" />
-        <p class="username">Luis Perez</p>
+        <p class="username">{{ currentUser?.full_name }}</p>
+
       </div>
 
       <nav class="menu">
