@@ -24,6 +24,7 @@ export class LoginComponent {
   constructor(private authService: AuthService, private router: Router, private snackBar: MatSnackBar) {}
 
   onSubmit(): void {
+  console.log('Enviando credenciales:', this.credentials);
   this.authService.login(this.credentials).subscribe({
     next: (response) => {
       this.authService.saveToken(response.access_token);

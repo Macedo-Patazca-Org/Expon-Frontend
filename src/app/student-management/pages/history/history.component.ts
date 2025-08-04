@@ -9,6 +9,7 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { Router, RouterModule } from '@angular/router';
 import { PresentationService } from '../../services/presentation.service';
 import { Presentation } from '../../models/presentation.model';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-history',
@@ -21,6 +22,7 @@ import { Presentation } from '../../models/presentation.model';
     MatTableModule,
     MatSortModule,
     MatPaginatorModule,
+    MatSnackBarModule,
     RouterModule
   ],
   templateUrl: './history.component.html',
@@ -30,10 +32,11 @@ export class HistoryComponent implements OnInit, AfterViewInit {
 
   constructor(
     private router: Router,
-    private presentationService: PresentationService
+    private presentationService: PresentationService,
+    private snackBar: MatSnackBar
   ) {}
 
-  displayedColumns: string[] = ['presentation', 'date', 'emotion', 'action', 'favorite'];
+  displayedColumns: string[] = ['presentation', 'date', 'emotion', 'action', 'favorite', 'delete'];
   dataSource = new MatTableDataSource<any>([]);
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -80,5 +83,25 @@ export class HistoryComponent implements OnInit, AfterViewInit {
 
   downloadReport(pdfUrl: string) {
     window.open(pdfUrl, '_blank');
+  }
+
+  deletePresentation(id: string): void {
+    this.presentationService.deletePresentation(id).subscribe({
+      next: () => {
+        this.dataSource.data = this.dataSource.data.filter(p => p.id !== id);
+        this.snackBar.open('Presentation deleted successfully.', 'Close', {
+          duration: 3000,
+          horizontalPosition: 'end',
+          verticalPosition: 'bottom'
+        });
+      },
+      error: (err) => {
+        console.error('Error deleting presentation:', err);
+        this.snackBar.open('Failed to delete presentation.', 'Close', {
+          duration: 3000,
+          panelClass: ['snackbar-error']
+        });
+      }
+    });
   }
 }
