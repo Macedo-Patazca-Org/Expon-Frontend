@@ -2,12 +2,13 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Profile } from '../models/profile.model';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProfileService {
-  private readonly baseUrl = 'https://ideal-merry-primate.ngrok-free.app/api';
+  private readonly baseUrl = `${environment.apiUrl}/profile`;
 
   constructor(private http: HttpClient) {}
 

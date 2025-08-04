@@ -9,6 +9,9 @@ interface Feedback {
   anxiety_feedback: string;
   language_feedback: string;
   suggestions: string;
+  dominant_emotion: string;
+  confidence: number;
+  emotion_probabilities: { [key: string]: number };
 }
 
 @Component({
@@ -50,5 +53,10 @@ export class CustomizeFeedbackComponent implements OnInit {
       this.error = true;
       this.loading = false;
     }
+  }
+
+  getEmotionPercentage(emotion: string): number {
+    if (!this.feedbackData || !this.feedbackData.emotion_probabilities) return 0;
+    return Math.round((this.feedbackData.emotion_probabilities[emotion] || 0) * 100);
   }
 }

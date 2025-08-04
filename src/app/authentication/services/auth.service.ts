@@ -1,29 +1,27 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 import { Profile } from '../../user-profile/models/profile.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private loginUrl = 'https://ideal-merry-primate.ngrok-free.app/api/v1/auth/login';
-  private registerUrl = 'https://ideal-merry-primate.ngrok-free.app/api/v1/auth/signup';
-  private recoverUrl = 'https://ideal-merry-primate.ngrok-free.app/api/v1/auth/recover-password'; 
-  private meUrl = 'https://ideal-merry-primate.ngrok-free.app/api/v1/auth/me';
+  private readonly baseUrl = `${environment.apiUrl}/auth`;
 
   constructor(private http: HttpClient) {}
 
   login(credentials: { email: string; password: string }): Observable<any> {
-    return this.http.post(this.loginUrl, credentials);
+    return this.http.post(`${this.baseUrl}/login`, credentials);
   }
 
   register(user: { username: string; email: string; password: string }): Observable<any> {
-    return this.http.post(this.registerUrl, user);
+    return this.http.post(`${this.baseUrl}/signup`, user);
   }
 
   recoverPassword(newPassword: string): Observable<any> {
-    return this.http.post(this.recoverUrl, { password: newPassword });
+    return this.http.post(`${this.baseUrl}/recover-password`, { password: newPassword });
   }
 
   getCurrentUser(): Observable<Profile> {
@@ -31,7 +29,7 @@ export class AuthService {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`
     });
-    return this.http.get<Profile>(this.meUrl, { headers });
+    return this.http.get<Profile>(`${this.baseUrl}/me`, { headers });
   }
 
   saveToken(token: string): void {
