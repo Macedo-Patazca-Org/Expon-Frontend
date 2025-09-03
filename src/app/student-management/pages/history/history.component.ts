@@ -36,7 +36,7 @@ export class HistoryComponent implements OnInit, AfterViewInit {
     private snackBar: MatSnackBar
   ) {}
 
-  displayedColumns: string[] = ['presentation', 'date', 'emotion', 'action', 'favorite', 'delete'];
+  displayedColumns: string[] = ['presentation', 'date', 'action', 'favorite', 'delete'];
   dataSource = new MatTableDataSource<any>([]);
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;

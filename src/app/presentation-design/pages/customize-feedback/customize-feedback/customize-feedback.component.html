@@ -8,8 +8,8 @@
   <div class="feedback-block">
     <h4>SENTIMENT ANALYSIS</h4>
     <p>{{ feedbackData.general_feedback }}</p>
-    <p><strong>Dominant emotion:</strong> {{ feedbackData.dominant_emotion }}</p>
-    <p><strong>Confidence:</strong> {{ feedbackData.confidence * 100 | number:'1.0-0' }}%</p>
+    <!--<p><strong>Dominant emotion:</strong> {{ feedbackData.dominant_emotion }}</p>
+    <p><strong>Confidence:</strong> {{ feedbackData.confidence * 100 | number:'1.0-0' }}%</p>-->
 
     <div *ngFor="let emo of feedbackData.emotion_probabilities | keyvalue">
       <span>{{ emo.key }}: {{ getEmotionPercentage(emo.key) }}%</span>
