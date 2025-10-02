@@ -1,29 +1,113 @@
 <div class="home-container">
+  <!-- Header -->
   <div class="header-section">
-    <div class="welcome-message">
-      <h2>Hi, welcome back</h2>
-      <p>You're doing great! Check out your latest presentations.</p>
+    <div class="header-title">
+      <h2>Overview</h2>
+      <p>Resumen de tu progreso en presentaciones.</p>
     </div>
-    <button class="new-presentation" (click)="goToUpload()">Start new presentation</button>
+    <button class="new-presentation" (click)="goToUpload()">Nueva presentación</button>
   </div>
 
-  <div class="content-section">
-    <div class="presentations">
-      <div class="card" *ngFor="let p of presentations" (click)="goToFeedbackConfig(p.id)">
-        <img [src]="p.image" alt="Presentation preview">
-        <h4>{{ p.title }}</h4>
-        <p>{{ p.date }}</p>
+  <section class="dashboard">
+    <!-- Línea -->
+    <article class="card col-8">
+      <h4>Evolución general</h4>
+      <div class="chart-box">
+        <canvas baseChart [type]="'line'" [options]="lineOptions" [data]="lineData"></canvas>
       </div>
-    </div>
-
-    <div class="emotions">
-      <h3>Emotional Trend Overview</h3>
-      <div *ngFor="let emotion of emotionSummary | keyvalue">
-        <span>{{ emotion.key }}: {{ emotion.value }}%</span>
-        <div class="bar">
-          <div class="fill" [style.width.%]="emotion.value"></div>
+      <div class="kpis" *ngIf="topEmotionLabel">
+        <div class="kpi">
+          <div class="label">Emoción más frecuente</div>
+          <div class="value">{{ topEmotionLabel }} ({{ topEmotionPct }}%)</div>
+        </div>
+        <div class="kpi">
+          <div class="label">Presentaciones</div>
+          <div class="value">{{ totalPresentations }}</div>
+        </div>
+        <div class="kpi">
+          <div class="label">Mejor puntaje</div>
+          <div class="value">{{ bestScore }}/5</div>
+        </div>
+        <div class="kpi">
+          <div class="label">Promedio</div>
+          <div class="value">{{ avgScore }}/5</div>
         </div>
       </div>
-    </div>
-  </div>
+    </article>
+
+    <!-- Gauge / Nivel emocional (por niveles y porcentaje) -->
+    <article class="card col-4">
+      <div class="card-title-row">
+        <h4>Nivel emocional promedio</h4>
+
+        <!-- Botón ayuda: abre tooltip con detalle -->
+        <div class="help-wrap"
+             (mouseenter)="showInfo=true" (mouseleave)="showInfo=false"
+             (click)="showInfo=!showInfo" aria-label="¿Qué es?">
+          <span class="help-icon">?</span>
+          <div class="help-popover" *ngIf="showInfo">
+            <div class="pop-title">¿Qué estoy viendo?</div>
+            <ul class="pop-list">
+              <li><b>Niveles:</b> Nerviosa, Ansiosa, Neutra, Confiada, Motivada y Entusiasta.</li>
+              <li><b>Tu nivel:</b> {{ scoreLevel }} ({{ levelIndex }}/6).</li>
+              <li><b>Porcentaje total:</b> {{ scorePercent | number:'1.0-0' }}%.</li>
+              <li><b>Dentro del nivel:</b> {{ withinLevelPct }}% (faltan {{ toNextPct }}% para subir).</li>
+              <li *ngIf="deltaPct !== 0">
+                <b>Cambio total:</b> {{ deltaPct > 0 ? ('+'+deltaPct) : deltaPct }} pp
+                <span *ngIf="deltaLevels !== 0"> ({{ deltaLevels>0?'+':''}}{{ deltaLevels }} niveles)</span>
+              </li>
+            </ul>
+            <div class="pop-foot">
+              La rueda está segmentada en 6 niveles. El marcador indica tu posición dentro del nivel actual.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="gauge-wrap">
+        <div class="chart-box sm">
+          <canvas
+            baseChart
+            [type]="'doughnut'"
+            [options]="gaugeOptions"
+            [plugins]="gaugePlugins"
+            [data]="gaugeData">
+          </canvas>
+        </div>
+
+        <!-- Overlay central: nivel + porcentaje -->
+        <div class="gauge-center">
+          <div class="level" [style.color]="levelColor">{{ scoreLevel }}</div>
+          <div class="points">{{ scorePercent | number:'1.0-0' }}%</div>
+          <div class="unit">DEL TOTAL</div>
+        </div>
+      </div>
+    </article>
+
+    <!-- Barras por mes -->
+    <article class="card col-8">
+      <h4>Presentaciones por mes (últimos 6)</h4>
+      <div class="chart-box">
+        <canvas baseChart [type]="'bar'" [options]="barOptions" [data]="barData"></canvas>
+      </div>
+    </article>
+
+    <!-- Últimas presentaciones -->
+    <article class="card col-4">
+      <h4>Últimas presentaciones</h4>
+      <div class="list-header">
+        <div>Título</div><div>Fecha</div><div>Acción</div>
+      </div>
+      <div class="list">
+        <div class="item" *ngFor="let p of presentations">
+          <div class="thumb">
+            <img [src]="p.image" alt="">
+            <div class="title">{{ p.title }}</div>
+          </div>
+          <div class="date">{{ p.date }}</div>
+          <div class="cta"><a (click)="goToFeedbackConfig(p.id)">Ver</a></div>
+        </div>
+      </div>
+    </article>
+  </section>
 </div>

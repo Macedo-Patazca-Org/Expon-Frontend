@@ -2,9 +2,12 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import {
+  Presentation,
+  PresentationDetail
+} from '../../student-management/models/presentation.model';
 import { AudioUploadResponse } from '../../student-management/models/audio-response.model';
 import { EmotionSummary } from '../../student-management/models/emotion.model';
-import { Presentation } from '../../student-management/models/presentation.model';
 
 @Injectable({
   providedIn: 'root'
@@ -14,16 +17,18 @@ export class PresentationService {
 
   constructor(private http: HttpClient) {}
 
-  uploadPresentation(file: File): Observable<any> {
+  // ⬇️ Este endpoint devuelve el DETALLE completo (incluye transcript, probabilities, metadata)
+  uploadPresentation(file: File): Observable<PresentationDetail> {
     const formData = new FormData();
     formData.append('file', file);
-    return this.http.post<any>(`${this.API_URL}/presentation/upload`, formData);
+    return this.http.post<PresentationDetail>(`${this.API_URL}/presentation/upload`, formData);
   }
 
   getEmotionSummary(presentationId: number): Observable<EmotionSummary> {
     return this.http.get<EmotionSummary>(`${this.API_URL}/presentations/${presentationId}/emotion-summary`);
   }
 
+  // ⬇️ Listado/summary (usa el tipo compacto)
   getPresentationSummaries(): Observable<Presentation[]> {
     return this.http.get<Presentation[]>(`${this.API_URL}/presentation/summary`);
   }
@@ -40,4 +45,8 @@ export class PresentationService {
     return this.http.delete(`${this.API_URL}/presentation/${id}`);
   }
 
+  // ⬇️ DETALLE por id (incluye transcript, probabilities, metadata)
+  getPresentationById(presentationId: string): Observable<PresentationDetail> {
+    return this.http.get<PresentationDetail>(`${this.API_URL}/presentation/${presentationId}`);
+  }
 }

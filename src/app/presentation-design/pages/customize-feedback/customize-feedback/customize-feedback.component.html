@@ -1,51 +1,118 @@
 <h2 class="title">Feedback</h2>
-<h3 class="subtitle">This is a summary of your presentation.</h3>
+<h3 class="subtitle">Resumen de tu presentación</h3>
 
-<div *ngIf="loading">Loading feedback...</div>
-<div *ngIf="error">❌ Could not load feedback.</div>
+<div *ngIf="loading">Cargando feedback...</div>
+<div *ngIf="error">❌ No se pudo cargar el feedback.</div>
 
-<div class="feedback-grid" *ngIf="feedbackData">
-  <div class="feedback-block">
-    <h4>SENTIMENT ANALYSIS</h4>
-    <p>{{ feedbackData.general_feedback }}</p>
-    <p><strong>Dominant emotion:</strong> {{ feedbackData.dominant_emotion }}</p>
-    <p><strong>Confidence:</strong> {{ feedbackData.confidence * 100 | number:'1.0-0' }}%</p>
+<!-- ===== Fila 0: KPI cards ===== -->
+<section class="kpi-row" *ngIf="!loading && !error">
+  <article class="kpi-card">
+    <div class="kpi-title">Emoción dominante</div>
+    <div class="kpi-main">
+      <span class="kpi-dot" [style.background]="chartDominant ? emotionColors[chartDominant] : '#9ca3af'"></span>
+      <span class="kpi-strong">{{ emotionLabels[chartDominant!] || chartDominant || '—' }}</span>
+    </div>
+    <div class="kpi-sub">{{ getEmotionPercentage(chartDominant || 'confiada') }}% estimado</div>
+  </article>
 
-    <div *ngFor="let emo of feedbackData.emotion_probabilities | keyvalue">
-      <span>{{ emo.key }}: {{ getEmotionPercentage(emo.key) }}%</span>
-      <div class="bar">
-        <div class="fill" [style.width.%]="getEmotionPercentage(emo.key)"></div>
+  <!-- ✅ ahora usa chartConfidence01 -->
+  <!-- <article class="kpi-card">
+    <div class="kpi-title">
+      Fiabilidad de detección
+      <span title="Qué tan seguro está el modelo sobre la emoción dominante detectada.">ℹ️</span>
+    </div>
+    <div class="kpi-main"><span class="stars">{{ starsLine(starsConfidence) }}</span></div>
+    <div class="kpi-sub">{{ (chartConfidence01 || 0) * 100 | number:'1.0-0' }}%</div>
+  </article> -->
+
+  <article class="kpi-card">
+    <div class="kpi-title">Ansiedad estimada</div>
+    <div class="kpi-badge danger">{{ getEmotionPercentage('ansiosa') }}%</div>
+    <div class="kpi-sub">según modelo</div>
+  </article>
+
+  <article class="kpi-card">
+    <div class="kpi-title">Palabras</div>
+    <div class="kpi-strong">{{ lang?.total_words ?? '—' }}</div>
+    <div class="kpi-sub">conteo total</div>
+  </article>
+
+  <article class="kpi-card">
+    <div class="kpi-title">Muletillas</div>
+    <div class="kpi-strong">{{ lang?.filler_count ?? 0 }}</div>
+    <div class="kpi-sub">detectadas</div>
+  </article>
+</section>
+
+<!-- ===== Grid principal ===== -->
+<section class="dash-grid" *ngIf="!loading && !error">
+  <article class="feedback-block col-7">
+    <h4 class="block-title">ANÁLISIS DE EMOCIONES</h4>
+    <p class="subtle">
+      Emoción dominante:
+      <strong>{{ chartDominant || '—' }}</strong>
+      · Fiabilidad:
+      <span class="stars">{{ starsLine(starsConfidence) }}</span>
+      ({{ starsConfidence }}/5)
+    </p>
+
+    <div class="chart-box">
+      <canvas baseChart [type]="'doughnut'" [data]="doughnutData" [options]="doughnutOptions"></canvas>
+    </div>
+
+    <div class="legend-grid">
+      <div class="legend-item" *ngFor="let key of emotionsOrder">
+        <span class="legend-dot" [style.background]="emotionColors[key]"></span>
+        <span>{{ emotionLabels[key] || key }}</span>
+        <span class="subtle">· {{ getEmotionPercentage(key) }}%</span>
       </div>
     </div>
-  </div>
 
-  <div class="feedback-block">
-    <h4>CONFIDENCE LEVEL</h4>
-    <p>{{ feedbackData.confidence_feedback }}</p>
-  </div>
+    <div style="margin-top:10px;">
+      <div class="subtle">
+        Equilibrio emocional
+        <span title="Índice sintético: más estrellas = mayor presencia de emociones facilitadoras (confiada, entusiasta, motivada) respecto a emociones tensas (ansiosa, nerviosa). No es un juicio de valor."></span>
+      </div>
+      <div class="stars">{{ starsLine(starsOverall) }}</div>
+    </div>
+  </article>
 
-  <div class="feedback-block">
-    <h4>ANXIETY LEVEL</h4>
-    <p>{{ feedbackData.anxiety_feedback }}</p>
-  </div>
+  <article class="feedback-block col-5">
+    <h4 class="block-title">INTERPRETACIÓN</h4>
+    <p *ngIf="feedbackData?.general_feedback as g" style="margin: 6px 0;">{{ g }}</p>
+    <p *ngIf="feedbackData?.confidence_feedback as cf" style="margin: 6px 0;">{{ cf }}</p>
+    <p *ngIf="feedbackData?.anxiety_feedback as af" style="margin: 6px 0;">{{ af }}</p>
+    <p *ngIf="!feedbackData">—</p>
+  </article>
 
-  <div class="feedback-block">
-    <h4>LANGUAGE FEEDBACK</h4>
-    <p>{{ feedbackData.language_feedback }}</p>
-  </div>
+  <article class="feedback-block col-7">
+    <h4 class="block-title">LENGUAJE</h4>
+    <p>{{ feedbackData?.language_feedback || '—' }}</p>
+  </article>
 
-  <div class="feedback-block">
-    <h4>SUGGESTIONS FOR IMPROVEMENT</h4>
-    <p>{{ feedbackData.suggestions }}</p>
-  </div>
+  <article class="feedback-block col-5">
+    <h4 class="block-title">CONSEJOS</h4>
+    <ul *ngIf="lang?.tips?.length; else noTips" style="margin-left: 1rem;">
+      <li *ngFor="let t of lang!.tips">{{ t }}</li>
+    </ul>
+    <ng-template #noTips>—</ng-template>
 
-  <div class="feedback-block">
-    <h4>How did you feel when presenting?</h4>
-    <textarea placeholder="Write your feelings here..."></textarea>
-  </div>
-</div>
+    <!-- ✅ ejemplos de muletillas detectadas -->
+    <!-- <div *ngIf="lang?.filler_examples?.length" style="margin-top:12px;">
+      <div class="subtle">Muletillas detectadas</div>
+      <ul>
+        <li *ngFor="let s of lang!.filler_examples">…{{ s }}…</li>
+      </ul>
+    </div> -->
+  </article>
+
+  <article class="feedback-block col-12">
+    <h4 class="block-title">SUGERENCIAS DEL SISTEMA</h4>
+    <p>{{ feedbackData?.suggestions || '—' }}</p>
+  </article>
+</section>
 
 <div class="feedback-actions">
-  <a routerLink="/" class="link-button">Go to the Home</a>
-  <button mat-flat-button class="download-button">Download report</button>
+  <a routerLink="/" class="link-button">Volver al inicio</a>
+  <button mat-flat-button class="download-button">Descargar reporte</button>
 </div>
