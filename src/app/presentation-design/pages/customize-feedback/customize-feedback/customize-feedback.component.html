@@ -69,10 +69,7 @@
     </div>
 
     <div style="margin-top:10px;">
-      <div class="subtle">
-        Equilibrio emocional
-        <span title="Índice sintético: más estrellas = mayor presencia de emociones facilitadoras (confiada, entusiasta, motivada) respecto a emociones tensas (ansiosa, nerviosa). No es un juicio de valor."></span>
-      </div>
+      <div class="subtle">Equilibrio emocional: {{ starsOverall | number:'1.1-1' }} / 5</div>
       <div class="stars">{{ starsLine(starsOverall) }}</div>
     </div>
   </article>

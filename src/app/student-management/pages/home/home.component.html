@@ -35,30 +35,33 @@
       </div>
     </article>
 
-    <!-- Gauge / Nivel emocional (por niveles y porcentaje) -->
+    <!-- Gauge / Nivel emocional (5 niveles, tipo "estrellas") -->
     <article class="card col-4">
       <div class="card-title-row">
         <h4>Nivel emocional promedio</h4>
 
-        <!-- Botón ayuda: abre tooltip con detalle -->
+        <!-- Botón ayuda -->
         <div class="help-wrap"
              (mouseenter)="showInfo=true" (mouseleave)="showInfo=false"
              (click)="showInfo=!showInfo" aria-label="¿Qué es?">
           <span class="help-icon">?</span>
           <div class="help-popover" *ngIf="showInfo">
-            <div class="pop-title">¿Qué estoy viendo?</div>
+            <div class="pop-title">¿Cómo leer esta rueda?</div>
             <ul class="pop-list">
-              <li><b>Niveles:</b> Nerviosa, Ansiosa, Neutra, Confiada, Motivada y Entusiasta.</li>
-              <li><b>Tu nivel:</b> {{ scoreLevel }} ({{ levelIndex }}/6).</li>
-              <li><b>Porcentaje total:</b> {{ scorePercent | number:'1.0-0' }}%.</li>
-              <li><b>Dentro del nivel:</b> {{ withinLevelPct }}% (faltan {{ toNextPct }}% para subir).</li>
-              <li *ngIf="deltaPct !== 0">
-                <b>Cambio total:</b> {{ deltaPct > 0 ? ('+'+deltaPct) : deltaPct }} pp
-                <span *ngIf="deltaLevels !== 0"> ({{ deltaLevels>0?'+':''}}{{ deltaLevels }} niveles)</span>
+              <li><b>Escala 0–100%:</b> 0% Nervioso · 20% Ansioso · 40% Neutro · 60% Confiado · 80% Motivado · 100% Entusiasta.</li>
+              <li><b>Tu posición:</b> 44.6% (Entre Neutro y Confiado, promedio 2.23 / 5).</li>
+              <li *ngIf="topEmotionLabel"><b>Emoción más frecuente:</b> {{ topEmotionLabel }} ({{ topEmotionPct }}%).</li>
+              <li>
+                <b>Progreso total:</b>
+                {{ formatSigned(totalDeltaPct) }} pp
+                <span *ngIf="totalDeltaLevels !== 0">
+                  ({{ formatSigned(totalDeltaLevels) }} niveles)
+                </span>
               </li>
             </ul>
             <div class="pop-foot">
-              La rueda está segmentada en 6 niveles. El marcador indica tu posición dentro del nivel actual.
+              El arco es <b>continuo</b>. Las marcas finas separan bloques de 20%.
+              El punto naranja muestra tu porcentaje exacto; el color del tramo solo ayuda a ubicarte.
             </div>
           </div>
         </div>
@@ -75,11 +78,21 @@
           </canvas>
         </div>
 
-        <!-- Overlay central: nivel + porcentaje -->
+        <!-- Regleta de 5 pasos para marcar el nivel -->
+        <div class="level-steps">
+          <span
+            class="step"
+            *ngFor="let _ of [1,2,3,4,5]; let i = index"
+            [style.background]="(i+1)===levelIndex ? levelColor : '#e5e7eb'">
+          </span>
+        </div>
+
+        <!-- Overlay central: nivel + porcentaje + promedio crudo -->
         <div class="gauge-center">
-          <div class="level" [style.color]="levelColor">{{ scoreLevel }}</div>
-          <div class="points">{{ scorePercent | number:'1.0-0' }}%</div>
-          <div class="unit">DEL TOTAL</div>
+          <div class="level" [style.color]="levelColor">Nivel {{ levelIndex }}</div>
+          <div class="points">{{ scorePercent | number:'1.0-1' }}%</div>
+          <div class="unit">POSICIÓN GLOBAL</div>
+          <div class="subnote">Promedio: {{ avgRaw | number:'1.2-2' }} / 5</div>
         </div>
       </div>
     </article>

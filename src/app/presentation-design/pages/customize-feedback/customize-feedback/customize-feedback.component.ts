@@ -12,6 +12,8 @@ import {
   ChartOptions, ChartData
 } from 'chart.js';
 
+import { computeEmotionScore } from '../../../../shared/emotion-score.util';
+
 // Registramos solo lo necesario
 Chart.register(ArcElement, Tooltip, Legend);
 
@@ -114,7 +116,7 @@ export class CustomizeFeedbackComponent implements OnInit {
         // 4) Derivados / UI
         this.levels010 = this.computeLevels010(this.chartProbs);
         this.starsConfidence = this.confidenceStars(this.chartConfidence01);
-        this.starsOverall = this.overallStars(this.chartProbs);
+        this.starsOverall = computeEmotionScore(this.chartProbs); // ponderado
 
         // 5) Construir el único gráfico
         this.buildEmotionDoughnut();
@@ -160,17 +162,38 @@ export class CustomizeFeedbackComponent implements OnInit {
     return Math.max(1, Math.round((probDominante01 || 0) * total)); // 1..5
   }
 
-  private overallStars(probs01: Record<string, number>, total = 5) {
-    const POS = new Set(['confiada','motivada','entusiasta']);
-    const NEG = new Set(['ansiosa','nerviosa']);
-    const pos = Object.entries(probs01 || {}).reduce((s,[k,v]) => s + (POS.has(k) ? v : 0), 0);
-    const neg = Object.entries(probs01 || {}).reduce((s,[k,v]) => s + (NEG.has(k) ? v : 0), 0);
-    const raw = Math.min(total, Math.max(1, 2.5 + 2.5 * (pos - neg))); // 1..5 centrado en 2.5
-    return Math.round(raw);
-  }
+  /*private overallStars(probs01: Record<string, number>, total = 5) {
+    if (!probs01) return 0;
+
+    // 1. Mapear emociones a valores base (0 a 5)
+    const emotionWeights: Record<string, number> = {
+      nerviosa: 0,
+      ansiosa: 1,
+      neutra: 2.5,
+      confiada: 3,
+      motivada: 4,
+      entusiasta: 5
+    };
+
+    // 2. Calcular valor ponderado (promedio según probabilidades)
+    let score = 0;
+    for (const [emo, prob] of Object.entries(probs01)) {
+      const weight = emotionWeights[emo] ?? 2.5;
+      score += prob * weight;
+    }
+
+    // 3. Redondear al múltiplo de 0.5 más cercano
+    const rounded = Math.round(score * 2) / 2;
+
+    // 4. Limitar entre 0.5 y 5
+    return Math.max(0.5, Math.min(total, rounded));
+  }*/
 
   starsLine(n: number, total = 5) {
-    return '★'.repeat(n) + '☆'.repeat(Math.max(0, total - n));
+    // Si quieres mostrar medias estrellas visualmente necesitas iconos, aquí es simple texto
+    const full = Math.floor(n);
+    const half = n % 1 >= 0.5 ? 1 : 0;
+    return '★'.repeat(full) + (half ? '⯪' : '') + '☆'.repeat(total - full - half);
   }
 
   getEmotionPercentage(key: string): number {
