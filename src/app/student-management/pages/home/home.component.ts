@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms'; // 👈 necesario para ngModel
 import { Router } from '@angular/router';
 import { PresentationService } from '../../services/presentation.service';
 import { Presentation } from '../../models/presentation.model';
@@ -20,10 +21,10 @@ const GaugePointerPlugin = {
   id: 'gaugePointer',
   afterDatasetsDraw(chart: any, _args: any, opts: any) {
     if (!opts?.show) return;
-    const meta = chart.getDatasetMeta(1); // dataset de progreso [p, 100-p]
+    const meta = chart.getDatasetMeta(1);
     if (!meta?.data?.length) return;
 
-    const arc: any = meta.data[0]; // primer slice = progreso
+    const arc: any = meta.data[0];
     const { x, y, outerRadius, endAngle } = arc.getProps(['x', 'y', 'outerRadius', 'endAngle'], true);
 
     const ctx = chart.ctx;
@@ -46,7 +47,7 @@ Chart.register(GaugePointerPlugin as any);
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, NgChartsModule],
+  imports: [CommonModule, FormsModule, NgChartsModule],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
@@ -67,7 +68,7 @@ export class HomeComponent implements OnInit {
   };
   lineData: ChartData<'line'> = { labels: [], datasets: [{ data: [], borderColor:'#00bfa6', pointRadius:3 }] };
 
-  // Barras
+  // Barras (se recalcula según período)
   barOptions: ChartOptions<'bar'> = {
     responsive:true, maintainAspectRatio:false,
     scales:{ y:{ beginAtZero:true, ticks:{ precision:0 } }, x:{ grid:{ display:false } } },
@@ -75,62 +76,23 @@ export class HomeComponent implements OnInit {
   };
   barData: ChartData<'bar'> = { labels: [], datasets: [{ data: [], backgroundColor:'#2dd4bf' }] };
 
-  /** ===== Continuo emocional 0–5 (pares de emociones por tramo) =====
-   *  0–1: Nervioso→Ansioso
-   *  1–2: Ansioso→Neutro
-   *  2–3: Neutro→Confiado
-   *  3–4: Confiado→Motivado
-   *  4–5: Motivado→Entusiasta
-   */
+  /** ===== Continuo emocional 0–5 ===== */
   private readonly EMO_NAMES = ['Nervioso','Ansioso','Neutro','Confiado','Motivado','Entusiasta'];
+  private bandLabelBySegIndex(i: number){ const a=this.EMO_NAMES[i], b=this.EMO_NAMES[i+1]; return `${a} → ${b}`; }
+  private betweenLabelFromRaw(raw: number){ const i = Math.min(4, Math.max(0, Math.floor(raw))); return `Entre ${this.EMO_NAMES[i]} y ${this.EMO_NAMES[i+1]}`; }
 
-  /** Devuelve: índice entero 0..4 del segmento (20% c/u) según un % [0..100] */
-  private segIndexFromPercent(p: number){ return Math.min(4, Math.max(0, Math.floor(p / 20))); }
-
-  /** Label “Nervioso → Ansioso”, “Ansioso → Neutro”, etc. para un segmento 0..4 */
-  private bandLabelBySegIndex(i: number){
-    const a = this.EMO_NAMES[i];
-    const b = this.EMO_NAMES[i+1];
-    return `${a} → ${b}`;
-  }
-
-  /** Para un promedio crudo 0..5, devuelve “Entre Neutro y Confiado” */
-  private betweenLabelFromRaw(raw: number){
-    const i = Math.min(4, Math.max(0, Math.floor(raw))); // 0..4
-    const a = this.EMO_NAMES[i];
-    const b = this.EMO_NAMES[i+1];
-    return `Entre ${a} y ${b}`;
-  }
-
-  /* ================== Gauge por niveles (5 niveles) ================== */
+  /* ================== Gauge ================== */
   showInfo = false;
   levelColor = '#14b8a6';
   gaugePlugins: Plugin[] = [GaugePointerPlugin as unknown as Plugin];
-
-  // 5 segmentos iguales (20% c/u)
   private readonly SEGMENTS = [20, 20, 20, 20, 20];
 
-  // Definición de niveles (1..5)
   private readonly LEVELS = [
-    { key:'nivel1', name:'Muy tenso',          min:  0, max: 20,
-      color:'#ef4444', pale:'rgba(239, 68, 68, 0.35)',
-      desc:'Alto nivel de tensión.', advice:'Respira y practica pausas.' },
-
-    { key:'nivel2', name:'Ansiedad baja/mod.', min: 20, max: 40,
-      color:'#f97316', pale:'rgba(249, 115, 22, 0.35)',
-      desc:'Algo de inquietud.', advice:'Baja el ritmo y enfoca ideas.' },
-
-    { key:'nivel3', name:'Neutro',             min: 40, max: 60,
-      color:'#f59e0b', pale:'rgba(245, 158, 11, 0.35)',
-      desc:'Estable, balanceado.', advice:'Añade energía positiva.' },
-
-    { key:'nivel4', name:'Confiado',           min: 60, max: 80,
-      color:'#14b8a6', pale:'rgba(20, 184, 166, 0.35)',
-      desc:'Buena confianza.', advice:'Mantén contacto visual.' },
-
-    { key:'nivel5', name:'Alta motivación',    min: 80, max:100,
-      color:'#22c55e', pale:'rgba(34, 197, 94, 0.35)',
-      desc:'Muy positivo y dinámico.', advice:'Cuida la claridad y ritmo.' }
+    { key:'nivel1', name:'Muy tenso',          min:  0, max: 20, color:'#ef4444', pale:'rgba(239, 68, 68, 0.35)', desc:'Alto nivel de tensión.', advice:'Respira y practica pausas.' },
+    { key:'nivel2', name:'Ansiedad baja/mod.', min: 20, max: 40, color:'#f97316', pale:'rgba(249, 115, 22, 0.35)', desc:'Algo de inquietud.', advice:'Baja el ritmo y enfoca ideas.' },
+    { key:'nivel3', name:'Neutro',             min: 40, max: 60, color:'#f59e0b', pale:'rgba(245, 158, 11, 0.35)', desc:'Estable, balanceado.', advice:'Añade energía positiva.' },
+    { key:'nivel4', name:'Confiado',           min: 60, max: 80, color:'#14b8a6', pale:'rgba(20, 184, 166, 0.35)', desc:'Buena confianza.', advice:'Mantén contacto visual.' },
+    { key:'nivel5', name:'Alta motivación',    min: 80, max:100, color:'#22c55e', pale:'rgba(34, 197, 94, 0.35)', desc:'Muy positivo y dinámico.', advice:'Cuida la claridad y ritmo.' }
   ];
 
   gaugeOptions: ChartOptions<'doughnut'> = {
@@ -143,22 +105,13 @@ export class HomeComponent implements OnInit {
     plugins: {
       legend: { display: false },
       tooltip: {
-        enabled: true,
-        mode: 'nearest',
-        intersect: false,
-        displayColors: true,
+        enabled: true, mode: 'nearest', intersect: false, displayColors: true,
         callbacks: {
           title: (items: TooltipItem<'doughnut'>[]) => {
             const it = items?.[0];
             if (!it) return '';
-            // Fondo segmentado: mostrar nivel + banda
-            if (it.datasetIndex === 0) {
-              return `Nivel ${it.dataIndex + 1} · ${this.bandLabelBySegIndex(it.dataIndex)}`;
-            }
-            // Arco de progreso: mostrar banda actual según avgRaw
-            if (it.datasetIndex === 1 && it.dataIndex === 0) {
-              return this.betweenLabel;
-            }
+            if (it.datasetIndex === 0) return `Nivel ${it.dataIndex + 1} · ${this.bandLabelBySegIndex(it.dataIndex)}`;
+            if (it.datasetIndex === 1 && it.dataIndex === 0) return this.betweenLabel;
             return '';
           },
           label: (ctx: TooltipItem<'doughnut'>) => {
@@ -166,9 +119,7 @@ export class HomeComponent implements OnInit {
               const L = this.LEVELS[ctx.dataIndex];
               return L ? `${L.min}–${L.max}%` : '';
             }
-            if (ctx.datasetIndex === 1 && ctx.dataIndex === 0) {
-              return `Progreso: ${this.scorePercent.toFixed(1)}%`;
-            }
+            if (ctx.datasetIndex === 1 && ctx.dataIndex === 0) return `Progreso: ${this.scorePercent.toFixed(1)}%`;
             return '';
           }
         }
@@ -180,39 +131,46 @@ export class HomeComponent implements OnInit {
   gaugeData: ChartData<'doughnut'> = { labels: [], datasets: [] };
 
   // Métricas generales
-  avgScore = 0;                   // promedio de estrellas redondeadas (línea)
+  avgScore = 0;
   bestScore = 0;
-  topEmotionLabel = ''; topEmotionPct = 0;
+
+  // —— Emoción más frecuente
+  topEmotionLabel = '';
+  topEmotionCount = 0;
+  topEmotionTie = false;
+  topEmotionTiedWith: string[] = [];
+  topEmotionTiebreak: 'confianza' | 'recencia' | '' = '';
+  topEmotionConfidenceNote = '';
+  kpiInfoOpen = false;
 
   // Gauge (usa promedio CRUDO)
-  avgRaw = 0;                     // 0..5 sin redondeos
-  scorePercent = 0;               // 0..100
-  scoreLevel   = '—';
-  levelIndex   = 0;               // 1..5
-  withinLevelPct = 0;             // 0..100 dentro del nivel
-  toNextPct = 0;                  // % restante para subir de nivel
-  deltaPct = 0;                   // cambio pp vs. primera
-  deltaLevels = 0;                // cambio en niveles
-  private firstPct = 0;           // % primera (crudo)
-  private lastPct = 0;            // % última (crudo)
-
-  // NUEVO: texto “Entre A y B” para el overlay central y tooltips
+  avgRaw = 0; scorePercent = 0; scoreLevel = '—'; levelIndex = 0;
+  withinLevelPct = 0; toNextPct = 0; deltaPct = 0; deltaLevels = 0;
+  private firstPct = 0; private lastPct = 0;
   betweenLabel = '';
 
-  // —— Tendencias (nuevo) ——
-  totalDeltaPct = 0;       // pp: primera -> última
-  totalDeltaLevels = 0;
-
-  recentDeltaPct = 0;      // pp: penúltima -> última
-  recentDeltaLevels = 0;
-
+  // Tendencias
+  totalDeltaPct = 0; totalDeltaLevels = 0; recentDeltaPct = 0; recentDeltaLevels = 0;
   formatSigned(n: number){ return (n>0?`+${n}`:`${n}`); }
 
+  // Periodo de barras
+  periodPreset: '7d'|'30d'|'6m'|'1y'|'custom' = '30d';
+  customStart = '';  // yyyy-MM-dd
+  customEnd = '';    // yyyy-MM-dd
+
+  // Mapeo etiquetas UI
+  private readonly EMO_LABELS: Record<string, string> = {
+    confiada:'Confiada', ansiosa:'Ansiosa', entusiasta:'Entusiasta',
+    motivada:'Motivada', nerviosa:'Nerviosa', neutra:'Neutra'
+  };
+
+  private summaries: Presentation[] = [];
 
   ngOnInit(): void {
     this.presentationService.getPresentationSummaries().subscribe({
       next: (data: Presentation[]) => {
         const sorted = [...data].sort((a,b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
+        this.summaries = sorted;
         this.totalPresentations = sorted.length;
 
         // Últimas
@@ -221,97 +179,73 @@ export class HomeComponent implements OnInit {
           image: 'https://cdn.prod.website-files.com/63ca9a05fdc83042565f605c/66a23e2154e5e054fff4f169_outline_blog.jpg'
         }));
 
-        // Barras por mes
-        const { mLabels, mCounts } = this.countByMonth(sorted, 6);
-        this.barData = { labels: mLabels, datasets: [{ data: mCounts, backgroundColor:'#2dd4bf' }] };
-
-        // Cargar detalles (para emotion_probabilities)
+        // Línea y gauge
         forkJoin(sorted.map(p => this.presentationService.getPresentationById(p.id)))
           .subscribe(details => {
-            // 1) Línea: estrellas visuales (redondeadas a .5)
+            // Línea
             const labels = sorted.map(p => this.shortDate(p.created_at));
             const lineScores = details.map((d, i) => {
               const probs = (d?.emotion_probabilities ?? {}) as Record<string, number>;
               return Object.keys(probs).length
-                ? computeEmotionScore(probs, true, true)   // .5 + clamp
+                ? computeEmotionScore(probs, true, true)
                 : this.fallbackStarsByDominant(sorted[i]);
             });
             this.lineData = { labels, datasets: [{ data: lineScores, borderColor:'#00bfa6', pointRadius:3 }] };
             this.avgScore = this.round1(lineScores.reduce((s,n)=>s+n,0) / (lineScores.length || 1));
-            this.bestScore = this.round1(lineScores.reduce((m,n)=>Math.max(m,n),0));
+            this.bestScore = this.round1(Math.max(...lineScores, 0));
 
-            // 2) Gauge: PROMEDIO CRUDO exacto (0..5)
+            // Gauge
             const raws = details.map((d, i) => {
               const probs = (d?.emotion_probabilities ?? {}) as Record<string, number>;
               return Object.keys(probs).length
-                ? computeEmotionScore(probs, false, false) // crudo 0..5
+                ? computeEmotionScore(probs, false, false)
                 : this.rawByDominant(sorted[i].dominant_emotion);
             });
-
-            this.avgRaw = raws.reduce((s,n)=>s+n,0) / (raws.length || 1);   // 0..5
-            this.scorePercent = this.round1((this.avgRaw / 5) * 100);       // 0..100
+            this.avgRaw = raws.reduce((s,n)=>s+n,0) / (raws.length || 1);
+            this.scorePercent = this.round1((this.avgRaw / 5) * 100);
             this.levelIndex   = Math.min(5, Math.max(1, Math.floor(this.avgRaw) + 1));
             this.scoreLevel   = this.LEVELS[this.levelIndex - 1].name;
             this.withinLevelPct = Math.round((this.avgRaw - Math.floor(this.avgRaw)) * 100);
             this.toNextPct      = 100 - this.withinLevelPct;
-
-            // NUEVO: texto “Entre A y B”
             this.betweenLabel = this.betweenLabelFromRaw(this.avgRaw);
-
-            // Construir gauge
             this.buildGauge(this.scorePercent);
 
-            // 3) Evolución: total (primera vs última) y reciente (penúltima vs última)
+            // Tendencias
             const n = raws.length;
             if (n >= 1) {
-              const firstRaw = raws[0];
-              const lastRaw  = raws[n - 1];
-
-              // Progreso total
-              const firstPct = (firstRaw / 5) * 100;
-              const lastPct  = (lastRaw  / 5) * 100;
+              const firstRaw = raws[0], lastRaw = raws[n - 1];
+              const firstPct = (firstRaw / 5) * 100, lastPct = (lastRaw / 5) * 100;
               this.totalDeltaPct = Math.round(lastPct - firstPct);
-
               const firstIdx = Math.min(5, Math.max(1, Math.floor(firstRaw) + 1));
               const lastIdx  = Math.min(5, Math.max(1, Math.floor(lastRaw) + 1));
               this.totalDeltaLevels = lastIdx - firstIdx;
 
-              // Tendencia reciente (penúltima -> última)
               if (n >= 2) {
-                const prevRaw = raws[n - 2];
-                const prevPct = (prevRaw / 5) * 100;
-
+                const prevRaw = raws[n - 2], prevPct = (prevRaw / 5) * 100;
                 this.recentDeltaPct = Math.round(lastPct - prevPct);
-
                 const prevIdx = Math.min(5, Math.max(1, Math.floor(prevRaw) + 1));
                 this.recentDeltaLevels = lastIdx - prevIdx;
-              } else {
-                this.recentDeltaPct = 0;
-                this.recentDeltaLevels = 0;
               }
-            } else {
-              this.totalDeltaPct = 0;
-              this.totalDeltaLevels = 0;
-              this.recentDeltaPct = 0;
-              this.recentDeltaLevels = 0;
             }
 
-            // 4) Emoción más frecuente (según summaries)
-            const dist = this.emotionDistribution(sorted);
-            const [topKey, topPct] = this.topEmotion(dist);
-            const EMO_LABELS: Record<string,string> = {
-              confiada:'Confiada', ansiosa:'Ansiosa', entusiasta:'Entusiasta',
-              motivada:'Motivada', nerviosa:'Nerviosa', neutra:'Neutra'
-            };
-            this.topEmotionLabel = EMO_LABELS[topKey] || topKey || '—';
-            this.topEmotionPct = Math.round(topPct);
+            // Emoción top (X/Y + desempate)
+            const top = this.computeTopEmotionWithConfidence(sorted, details);
+            this.topEmotionLabel = top.label;
+            this.topEmotionCount = top.count;
+            this.topEmotionTie = top.tie;
+            this.topEmotionTiedWith = top.tiedWith;
+            this.topEmotionTiebreak = top.tiebreak;
+            this.topEmotionConfidenceNote = top.confNote;
+
+            // Barras iniciales
+            this.refreshBars();
           });
       },
       error: err => console.error('Error loading presentations:', err)
     });
   }
 
-  /* === Gauge builder por niveles === */
+  /* === Gauge builder === */
   private buildGauge(percent: number){
     const p = Math.max(0, Math.min(100, percent));
     const L = this.LEVELS.find(l => p < l.max) || this.LEVELS[this.LEVELS.length - 1];
@@ -320,7 +254,6 @@ export class HomeComponent implements OnInit {
     this.gaugeData = {
       labels: [...this.LEVELS.map(l => l.name), 'Progreso', 'Resto'],
       datasets: [
-        // Fondo segmentado (niveles)
         {
           data: this.SEGMENTS,
           backgroundColor: this.LEVELS.map(l => l.pale),
@@ -330,7 +263,6 @@ export class HomeComponent implements OnInit {
           spacing: 6,
           weight: 0.9
         } as any,
-        // Progreso real
         {
           data: [p, 100 - p],
           backgroundColor: [L.color, 'rgba(148,163,184,0.30)'],
@@ -346,13 +278,144 @@ export class HomeComponent implements OnInit {
     this.setPointer(p, L.color);
   }
 
-  /** Inyecta la config del plugin 'gaugePointer' */
   private setPointer(percent: number, color: string){
-    (this.gaugeOptions.plugins as any).gaugePointer = {
-      show: true,
-      percent,
-      color
+    (this.gaugeOptions.plugins as any).gaugePointer = { show: true, percent, color };
+  }
+
+  /* ====== Barras: lógica de periodos ====== */
+  onPeriodChange(){
+    if (this.periodPreset === 'custom') {
+      const end = new Date();
+      const start = new Date(); start.setDate(end.getDate() - 30);
+      this.customStart = this.toYMD(start);
+      this.customEnd   = this.toYMD(end);
+    }
+    this.refreshBars();
+  }
+  onCustomRangeChange(){ if (this.periodPreset==='custom') this.refreshBars(); }
+
+  private refreshBars(){
+    if (!this.summaries.length){
+      this.barData = { labels: [], datasets: [{ data: [], backgroundColor:'#2dd4bf' }] };
+      return;
+    }
+
+    let start: Date, end: Date, gran: 'day'|'week'|'month'|'quarter';
+    const today = new Date();
+
+    if (this.periodPreset === '7d'){
+      end = this.endOfDay(today);
+      start = this.startOfDay(new Date(today)); start.setDate(start.getDate()-6);
+      gran = 'day';
+    } else if (this.periodPreset === '30d'){
+      end = this.endOfDay(today);
+      start = this.startOfDay(new Date(today)); start.setDate(start.getDate()-29);
+      gran = 'week';
+    } else if (this.periodPreset === '6m'){
+      end = this.endOfDay(today);
+      start = this.firstOfMonth(new Date(today.getFullYear(), today.getMonth()-5, 1));
+      gran = 'month';
+    } else if (this.periodPreset === '1y'){
+      end = this.endOfDay(today);
+      start = this.firstOfMonth(new Date(today.getFullYear(), today.getMonth()-11, 1));
+      gran = 'month';
+    } else {
+      if (!this.customStart || !this.customEnd) return;
+      start = this.startOfDay(new Date(this.customStart));
+      end   = this.endOfDay(new Date(this.customEnd));
+      const days = Math.max(1, Math.ceil((end.getTime()-start.getTime())/86400000));
+      if (days <= 14) gran = 'day';
+      else if (days <= 90) gran = 'week';
+      else if (days <= 540) gran = 'month';
+      else gran = 'quarter';
+    }
+
+    const { labels, counts } = this.groupPresentations(this.summaries, start, end, gran);
+    this.barData = { labels, datasets: [{ data: counts, backgroundColor:'#2dd4bf' }] };
+  }
+
+  // ==== NUEVOS helpers de formato ====
+  private fmtDay(d: Date){ return String(d.getDate()).padStart(2,'0'); }
+  private fmtMon(d: Date){ return d.toLocaleString('es-PE',{ month:'short'}).replace('.',''); }
+  /** Etiqueta “02–08 sep” o “28 jul–03 ago” si cruza de mes */
+  private weekRangeLabel(start: Date){
+    const s = new Date(start);
+    const e = new Date(start); e.setDate(e.getDate()+6);
+    const sd = this.fmtDay(s), ed = this.fmtDay(e);
+    const sm = this.fmtMon(s), em = this.fmtMon(e);
+    return sm === em ? `${sd}–${ed} ${em}` : `${sd} ${sm}–${ed} ${em}`;
+  }
+
+  private groupPresentations(list: Presentation[], start: Date, end: Date, gran: 'day'|'week'|'month'|'quarter'){
+    const labels: string[] = [];
+    const keys: string[] = [];
+    const counts: number[] = [];
+
+    const pushBucket = (key: string, label: string) => {
+      keys.push(key); labels.push(label); counts.push(0);
     };
+
+    if (gran === 'day'){
+      const cur = new Date(start);
+      while (cur <= end){
+        const key = this.toYMD(cur);
+        const label = cur.toLocaleDateString('es-PE',{ day:'2-digit', month:'short'}).replace('.','');
+        pushBucket(key, label);
+        cur.setDate(cur.getDate()+1);
+      }
+    } else if (gran === 'week'){
+      // Semana (lunes) con rango “02–08 sep”
+      const w = this.startOfWeek(new Date(start));
+      while (w <= end){
+        const key = 'W'+this.toYMD(w);
+        const label = this.weekRangeLabel(w);
+        pushBucket(key, label);
+        w.setDate(w.getDate()+7);
+      }
+    } else if (gran === 'month'){
+      // Solo el nombre del mes (sin año)
+      const m = this.firstOfMonth(new Date(start.getFullYear(), start.getMonth(), 1));
+      while (m <= end){
+        const key = m.getFullYear()+'-'+(m.getMonth()+1);
+        const label = this.fmtMon(m); // “ene”, “feb”, …
+        pushBucket(key, label);
+        m.setMonth(m.getMonth()+1);
+      }
+    } else { // quarter
+      const q = this.firstOfQuarter(new Date(start.getFullYear(), start.getMonth(), 1));
+      while (q <= end){
+        const qNum = Math.floor(q.getMonth()/3)+1;
+        const label = `T${qNum}`;
+        const key = `Q${q.getFullYear()}-${qNum}`;
+        pushBucket(key, label);
+        q.setMonth(q.getMonth()+3);
+      }
+    }
+
+    // Conteo
+    for (const p of list){
+      const d = new Date(p.created_at);
+      if (d < start || d > end) continue;
+
+      let key = '';
+      if (gran === 'day'){
+        key = this.toYMD(this.startOfDay(d));
+      } else if (gran === 'week'){
+        key = 'W'+this.toYMD(this.startOfWeek(d));
+      } else if (gran === 'month'){
+        const mm = new Date(d.getFullYear(), d.getMonth(), 1);
+        key = mm.getFullYear()+'-'+(mm.getMonth()+1);
+      } else {
+        const qq = this.firstOfQuarter(new Date(d.getFullYear(), d.getMonth(), 1));
+        const qNum = Math.floor(qq.getMonth()/3)+1;
+        key = `Q${qq.getFullYear()}-${qNum}`;
+      }
+
+      const idx = keys.indexOf(key);
+      if (idx >= 0) counts[idx] += 1;
+    }
+
+    return { labels, counts };
   }
 
   /* ================== Lógica de scores ================== */
@@ -364,19 +427,6 @@ export class HomeComponent implements OnInit {
     return anchor[dom] ?? 2;
   }
 
-  private rawScoreFromPresentation(p: Presentation): number {
-    const probs = (p as any).emotion_probabilities as Record<string, number> | undefined;
-    if (probs && Object.keys(probs).length) {
-      return computeEmotionScore(probs, false, false);
-    }
-    const dom = (p.dominant_emotion || 'neutra').toLowerCase();
-    const anchorRaw: Record<string, number> = {
-      nerviosa: 0, ansiosa: 1, neutra: 2, confiada: 3, motivada: 4, entusiasta: 5
-    };
-    return anchorRaw[dom] ?? 2;
-  }
-
-  /* ================== Helpers previos ================== */
   private rawByDominant(dom?: string) {
     const anchorRaw: Record<string, number> = {
       nerviosa: 0, ansiosa: 1, neutra: 2, confiada: 3, motivada: 4, entusiasta: 5
@@ -384,34 +434,91 @@ export class HomeComponent implements OnInit {
     return anchorRaw[(dom || 'neutra').toLowerCase()] ?? 2;
   }
 
-  private countByMonth(list: Presentation[], months: number){
-    const now = new Date(); const labels:string[] = []; const counts:number[] = [];
-    for (let i = months-1; i >= 0; i--){
-      const d = new Date(now.getFullYear(), now.getMonth()-i, 1);
-      const key = d.getFullYear() + '-' + (d.getMonth()+1);
-      labels.push(d.toLocaleString('es-PE',{ month:'short'}).replace('.','') + ' ' + (''+d.getFullYear()).slice(2));
-      counts.push(list.filter(p => { const pd = new Date(p.created_at); return (pd.getFullYear() + '-' + (pd.getMonth()+1)) === key; }).length);
+  /** Top emoción por conteo; desempate por confianza promedio; si persiste/ausente, por recencia */
+  private computeTopEmotionWithConfidence(sorted: Presentation[], details: any[]){
+    const count: Record<string, number> = {};
+    const sumConf: Record<string, number> = {};
+    const nConf: Record<string, number> = {};
+    const lastIndex: Record<string, number> = {};
+
+    for (let i = 0; i < sorted.length; i++){
+      const dom = (sorted[i].dominant_emotion || 'neutra').toLowerCase();
+      count[dom] = (count[dom] || 0) + 1;
+      lastIndex[dom] = i;
+
+      const probs = (details[i]?.emotion_probabilities ?? {}) as Record<string, number>;
+      const conf = typeof probs[dom] === 'number' ? probs[dom] : undefined;
+      if (typeof conf === 'number'){
+        sumConf[dom] = (sumConf[dom] || 0) + conf;
+        nConf[dom] = (nConf[dom] || 0) + 1;
+      }
     }
-    return { mLabels: labels, mCounts: counts };
-  }
 
-  private emotionDistribution(list: Presentation[]){
-    const acc:Record<string,number>={};
-    for (const p of list){
-      const k=(p.dominant_emotion||'neutra').toLowerCase();
-      acc[k]=(acc[k]||0)+1;
+    if (!sorted.length){
+      return { label: '—', count: 0, tie: false, tiedWith: [] as string[], tiebreak: '' as const, confNote: '' };
     }
-    const total=list.length||1;
-    Object.keys(acc).forEach(k => acc[k]=(acc[k]/total)*100);
-    return acc;
+
+    let maxCount = 0;
+    for (const v of Object.values(count)) if (v > maxCount) maxCount = v;
+    const candidates = Object.keys(count).filter(k => count[k] === maxCount);
+
+    if (candidates.length === 1){
+      const k = candidates[0];
+      return { label: this.EMO_LABELS[k] || k, count: maxCount, tie: false, tiedWith: [], tiebreak: '' as const, confNote: '' };
+    }
+
+    // Empate → confianza promedio
+    let bestByConf = ''; let bestAvg = -1; let hasAnyConf = false;
+    const avgBy: Record<string, number> = {};
+    for (const k of candidates){
+      if (nConf[k] > 0){
+        hasAnyConf = true;
+        const avg = sumConf[k] / nConf[k];
+        avgBy[k] = avg;
+        if (avg > bestAvg){ bestAvg = avg; bestByConf = k; }
+      }
+    }
+
+    if (hasAnyConf){
+      const topPeers = Object.entries(avgBy).filter(([_, v]) => v === bestAvg).map(([k]) => k);
+      if (topPeers.length === 1){
+        const k = bestByConf;
+        const tiedWith = candidates.filter(x => x !== k).map(x => this.EMO_LABELS[x] || x);
+        let confNote = '';
+        if (candidates.length === 2){
+          const other = candidates.find(x => x !== k)!;
+          confNote = `${(avgBy[k]).toFixed(2)} vs ${(avgBy[other] ?? 0).toFixed(2)}`;
+        } else {
+          confNote = `${(avgBy[k]).toFixed(2)}`;
+        }
+        return { label: this.EMO_LABELS[k] || k, count: maxCount, tie: true, tiedWith, tiebreak: 'confianza' as const, confNote };
+      }
+    }
+
+    // Fallback: recencia
+    let bestByRecency = candidates[0];
+    for (const k of candidates){
+      if ((lastIndex[k] ?? -1) > (lastIndex[bestByRecency] ?? -1)) bestByRecency = k;
+    }
+    const tiedWith = candidates.filter(x => x !== bestByRecency).map(x => this.EMO_LABELS[x] || x);
+    return { label: this.EMO_LABELS[bestByRecency] || bestByRecency, count: maxCount, tie: true, tiedWith, tiebreak: 'recencia' as const, confNote: '' };
   }
 
-  private topEmotion(dist: Record<string, number>){
-    let topK='neutra', topV=0;
-    for (const [k,v] of Object.entries(dist)) if (v>topV){ topK=k; topV=v; }
-    return [topK, Math.round(topV*10)/10] as [string, number];
+  /* ===== Helpers de fechas ===== */
+  private toYMD(d: Date){ return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
+  private startOfDay(d: Date){ d.setHours(0,0,0,0); return d; }
+  private endOfDay(d: Date){ d.setHours(23,59,59,999); return d; }
+  private startOfWeek(d: Date){ // lunes
+    const x = new Date(d); x.setHours(0,0,0,0);
+    const day = x.getDay(); // 0..6 (0=dom)
+    const diff = (day === 0 ? -6 : 1 - day);
+    x.setDate(x.getDate()+diff);
+    return x;
   }
+  private firstOfMonth(d: Date){ const x=new Date(d.getFullYear(), d.getMonth(), 1); x.setHours(0,0,0,0); return x; }
+  private firstOfQuarter(d: Date){ const q = Math.floor(d.getMonth()/3)*3; const x=new Date(d.getFullYear(), q, 1); x.setHours(0,0,0,0); return x; }
 
+  /* ===== util UI ===== */
   timeAgo(dateStr:string){
     const d=new Date(dateStr), n=new Date();
     const days=Math.floor((n.getTime()-d.getTime())/(1000*60*60*24));

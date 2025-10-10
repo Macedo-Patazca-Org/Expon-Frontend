@@ -15,32 +15,64 @@
       <div class="chart-box">
         <canvas baseChart [type]="'line'" [options]="lineOptions" [data]="lineData"></canvas>
       </div>
-      <div class="kpis" *ngIf="topEmotionLabel">
-        <div class="kpi">
-          <div class="label">Emoción más frecuente</div>
-          <div class="value">{{ topEmotionLabel }} ({{ topEmotionPct }}%)</div>
+
+      <!-- KPIs -->
+      <div class="kpis" *ngIf="totalPresentations > 0">
+        <!-- Emoción dominante -->
+        <div class="kpi kpi-emotion">
+          <div class="kpi-header">
+            <div class="label">Emoción dominante más frecuente</div>
+
+            <!-- Ayuda -->
+            <div class="help-wrap"
+                 (mouseenter)="kpiInfoOpen=true" (mouseleave)="kpiInfoOpen=false"
+                 (click)="kpiInfoOpen=!kpiInfoOpen"
+                 role="button" tabindex="0" aria-label="¿Qué es?">
+              <span class="help-icon">?</span>
+              <div class="help-popover" *ngIf="kpiInfoOpen">
+                <div class="pop-title">¿Por qué se muestra así?</div>
+                <ul class="pop-list">
+                  <li><b>Formato X/Y:</b> veces que fue <b>dominante</b> / total de presentaciones.</li>
+                  <li *ngIf="!topEmotionTie"><b>Sin empates:</b> es la que más se repite.</li>
+                  <li *ngIf="topEmotionTie && topEmotionTiebreak === 'confianza'">
+                    <b>Empate:</b> se eligió por <b>mayor confianza promedio</b>
+                    <span *ngIf="topEmotionConfidenceNote">({{ topEmotionConfidenceNote }})</span>.
+                  </li>
+                  <li *ngIf="topEmotionTie && topEmotionTiebreak === 'recencia'">
+                    <b>Empate:</b> se eligió por <b>recencia</b> (la más reciente).
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="value">
+            {{ topEmotionLabel || '—' }} ({{ topEmotionCount }}/{{ totalPresentations }})
+          </div>
         </div>
+
         <div class="kpi">
           <div class="label">Presentaciones</div>
           <div class="value">{{ totalPresentations }}</div>
         </div>
+
         <div class="kpi">
           <div class="label">Mejor puntaje</div>
           <div class="value">{{ bestScore }}/5</div>
         </div>
+
         <div class="kpi">
           <div class="label">Promedio</div>
-          <div class="value">{{ avgScore }}/5</div>
+          <div class="value">{{ avgRaw | number:'1.2-2' }}/5</div>
         </div>
       </div>
     </article>
 
-    <!-- Gauge / Nivel emocional (5 niveles, tipo "estrellas") -->
+    <!-- Gauge -->
     <article class="card col-4">
       <div class="card-title-row">
         <h4>Nivel emocional promedio</h4>
 
-        <!-- Botón ayuda -->
+        <!-- Ayuda -->
         <div class="help-wrap"
              (mouseenter)="showInfo=true" (mouseleave)="showInfo=false"
              (click)="showInfo=!showInfo" aria-label="¿Qué es?">
@@ -49,13 +81,15 @@
             <div class="pop-title">¿Cómo leer esta rueda?</div>
             <ul class="pop-list">
               <li><b>Escala 0–100%:</b> 0% Nervioso · 20% Ansioso · 40% Neutro · 60% Confiado · 80% Motivado · 100% Entusiasta.</li>
-              <li><b>Tu posición:</b> 44.6% (Entre Neutro y Confiado, promedio 2.23 / 5).</li>
-              <li *ngIf="topEmotionLabel"><b>Emoción más frecuente:</b> {{ topEmotionLabel }} ({{ topEmotionPct }}%).</li>
-              <li>
-                <b>Progreso total:</b>
-                {{ formatSigned(totalDeltaPct) }} pp
-                <span *ngIf="totalDeltaLevels !== 0">
-                  ({{ formatSigned(totalDeltaLevels) }} niveles)
+              <li><b>Tu posición:</b> {{ scorePercent | number:'1.0-1' }}% ({{ betweenLabel }}, promedio {{ avgRaw | number:'1.2-2' }} / 5).</li>
+              <li *ngIf="totalPresentations > 0">
+                <b>Emoción más frecuente:</b>
+                {{ topEmotionLabel || '—' }} ({{ topEmotionCount }}/{{ totalPresentations }})
+                <span *ngIf="topEmotionTie">
+                  · Empate resuelto por {{ topEmotionTiebreak === 'confianza' ? 'mayor confianza' : 'recencia' }}
+                  <ng-container *ngIf="topEmotionTiebreak === 'confianza' && topEmotionConfidenceNote">
+                    ({{ topEmotionConfidenceNote }})
+                  </ng-container>
                 </span>
               </li>
             </ul>
@@ -78,16 +112,15 @@
           </canvas>
         </div>
 
-        <!-- Regleta de 5 pasos para marcar el nivel -->
+        <!-- Regleta -->
         <div class="level-steps">
-          <span
-            class="step"
-            *ngFor="let _ of [1,2,3,4,5]; let i = index"
-            [style.background]="(i+1)===levelIndex ? levelColor : '#e5e7eb'">
+          <span class="step"
+                *ngFor="let _ of [1,2,3,4,5]; let i = index"
+                [style.background]="(i+1)===levelIndex ? levelColor : '#e5e7eb'">
           </span>
         </div>
 
-        <!-- Overlay central: nivel + porcentaje + promedio crudo -->
+        <!-- Overlay central -->
         <div class="gauge-center">
           <div class="level" [style.color]="levelColor">Nivel {{ levelIndex }}</div>
           <div class="points">{{ scorePercent | number:'1.0-1' }}%</div>
@@ -97,9 +130,28 @@
       </div>
     </article>
 
-    <!-- Barras por mes -->
+    <!-- Barras: selector de periodo -->
     <article class="card col-8">
-      <h4>Presentaciones por mes (últimos 6)</h4>
+      <div class="card-title-row">
+        <h4>Presentaciones por período</h4>
+
+        <div class="period-controls">
+          <select class="period-select" [(ngModel)]="periodPreset" (change)="onPeriodChange()">
+            <option value="7d">Últimos 7 días</option>
+            <option value="30d">Últimos 30 días</option>
+            <option value="6m">Últimos 6 meses</option>
+            <option value="1y">Último año</option>
+            <option value="custom">Rango personalizado…</option>
+          </select>
+
+          <ng-container *ngIf="periodPreset==='custom'">
+            <input class="date-input" type="date" [(ngModel)]="customStart" (change)="onCustomRangeChange()">
+            <span class="date-dash">–</span>
+            <input class="date-input" type="date" [(ngModel)]="customEnd" (change)="onCustomRangeChange()">
+          </ng-container>
+        </div>
+      </div>
+
       <div class="chart-box">
         <canvas baseChart [type]="'bar'" [options]="barOptions" [data]="barData"></canvas>
       </div>

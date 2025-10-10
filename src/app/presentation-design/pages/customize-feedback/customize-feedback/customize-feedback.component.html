@@ -1,34 +1,45 @@
-<h2 class="title">Feedback</h2>
-<h3 class="subtitle">Resumen de tu presentación</h3>
+<!-- ===== Encabezado ===== -->
+<h2 class="title">🎧 Análisis de tu voz y emociones</h2>
+<h3 class="subtitle">
+  Tu tono refleja cómo te comunicas. Descubre qué transmite tu voz y cómo fortalecerla para tu próxima presentación.
+</h3>
 
 <div *ngIf="loading">Cargando feedback...</div>
 <div *ngIf="error">❌ No se pudo cargar el feedback.</div>
 
 <!-- ===== Fila 0: KPI cards ===== -->
 <section class="kpi-row" *ngIf="!loading && !error">
+  <!-- Emoción dominante -->
   <article class="kpi-card">
     <div class="kpi-title">Emoción dominante</div>
     <div class="kpi-main">
-      <span class="kpi-dot" [style.background]="chartDominant ? emotionColors[chartDominant] : '#9ca3af'"></span>
-      <span class="kpi-strong">{{ emotionLabels[chartDominant!] || chartDominant || '—' }}</span>
+      <span class="kpi-dot" [style.background]="emotionColors[domKey]"></span>
+      <span class="kpi-strong">{{ emotionLabels[domKey] }}</span>
+      <span *ngIf="['confiada','motivada','entusiasta'].includes(domKey)" class="kpi-check">✔</span>
     </div>
-    <div class="kpi-sub">{{ getEmotionPercentage(chartDominant || 'confiada') }}% estimado</div>
+    <div class="kpi-sub">
+      <span class="kpi-badge" [ngClass]="dominantClass">{{ domPct }}%</span>
+      <span>&nbsp;estimado</span>
+    </div>
   </article>
 
-  <!-- ✅ ahora usa chartConfidence01 -->
-  <!-- <article class="kpi-card">
-    <div class="kpi-title">
-      Fiabilidad de detección
-      <span title="Qué tan seguro está el modelo sobre la emoción dominante detectada.">ℹ️</span>
-    </div>
-    <div class="kpi-main"><span class="stars">{{ starsLine(starsConfidence) }}</span></div>
-    <div class="kpi-sub">{{ (chartConfidence01 || 0) * 100 | number:'1.0-0' }}%</div>
-  </article> -->
-
+  <!-- Ansiedad -->
   <article class="kpi-card">
     <div class="kpi-title">Ansiedad estimada</div>
-    <div class="kpi-badge danger">{{ getEmotionPercentage('ansiosa') }}%</div>
-    <div class="kpi-sub">según modelo</div>
+    <div
+      class="kpi-badge"
+      [ngClass]="{
+        'good': getEmotionPercentage('ansiosa') <= 25,
+        'warn': getEmotionPercentage('ansiosa') > 25 && getEmotionPercentage('ansiosa') <= 50,
+        'danger': getEmotionPercentage('ansiosa') > 50
+      }">
+      {{ getEmotionPercentage('ansiosa') }}%
+    </div>
+    <div class="kpi-sub">
+      <span *ngIf="getEmotionPercentage('ansiosa') <= 25">Buen control emocional.</span>
+      <span *ngIf="getEmotionPercentage('ansiosa') > 25 && getEmotionPercentage('ansiosa') <= 50">Ligera tensión manejable.</span>
+      <span *ngIf="getEmotionPercentage('ansiosa') > 50">Trabaja la calma al inicio.</span>
+    </div>
   </article>
 
   <article class="kpi-card">
@@ -46,15 +57,15 @@
 
 <!-- ===== Grid principal ===== -->
 <section class="dash-grid" *ngIf="!loading && !error">
+  <!-- Donut -->
   <article class="feedback-block col-7">
-    <h4 class="block-title">ANÁLISIS DE EMOCIONES</h4>
-    <p class="subtle">
-      Emoción dominante:
-      <strong>{{ chartDominant || '—' }}</strong>
-      · Fiabilidad:
-      <span class="stars">{{ starsLine(starsConfidence) }}</span>
-      ({{ starsConfidence }}/5)
-    </p>
+    <h4 class="block-title">🎧 Cómo se distribuyeron las emociones en tu voz</h4>
+    <div class="subtle">Cada color representa el tono predominante detectado en tu audio.</div>
+
+    <div style="margin-top:10px;">
+      <div class="subtle">Equilibrio emocional: {{ starsOverall | number:'1.1-1' }} / 5</div>
+      <div class="stars">{{ starsLine(starsOverall) }}</div>
+    </div>
 
     <div class="chart-box">
       <canvas baseChart [type]="'doughnut'" [data]="doughnutData" [options]="doughnutOptions"></canvas>
@@ -67,48 +78,61 @@
         <span class="subtle">· {{ getEmotionPercentage(key) }}%</span>
       </div>
     </div>
-
-    <div style="margin-top:10px;">
-      <div class="subtle">Equilibrio emocional: {{ starsOverall | number:'1.1-1' }} / 5</div>
-      <div class="stars">{{ starsLine(starsOverall) }}</div>
-    </div>
   </article>
 
+  <!-- Interpretación -->
   <article class="feedback-block col-5">
     <h4 class="block-title">INTERPRETACIÓN</h4>
-    <p *ngIf="feedbackData?.general_feedback as g" style="margin: 6px 0;">{{ g }}</p>
-    <p *ngIf="feedbackData?.confidence_feedback as cf" style="margin: 6px 0;">{{ cf }}</p>
-    <p *ngIf="feedbackData?.anxiety_feedback as af" style="margin: 6px 0;">{{ af }}</p>
+    <ul class="bulleted">
+      <li *ngIf="feedbackData?.general_feedback as g"><strong>🟢 Lo que comunica tu voz:</strong> {{ g }}</li>
+      <li *ngIf="feedbackData?.confidence_feedback as cf"><strong>🟡 Seguridad:</strong> {{ cf }}</li>
+      <li *ngIf="feedbackData?.anxiety_feedback as af"><strong>🔵 Regulación:</strong> {{ af }}</li>
+    </ul>
     <p *ngIf="!feedbackData">—</p>
   </article>
 
+  <!-- Lenguaje -->
   <article class="feedback-block col-7">
     <h4 class="block-title">LENGUAJE</h4>
     <p>{{ feedbackData?.language_feedback || '—' }}</p>
   </article>
 
+  <!-- Reflexión -->
   <article class="feedback-block col-5">
-    <h4 class="block-title">CONSEJOS</h4>
-    <ul *ngIf="lang?.tips?.length; else noTips" style="margin-left: 1rem;">
-      <li *ngFor="let t of lang!.tips">{{ t }}</li>
-    </ul>
-    <ng-template #noTips>—</ng-template>
-
-    <!-- ✅ ejemplos de muletillas detectadas -->
-    <!-- <div *ngIf="lang?.filler_examples?.length" style="margin-top:12px;">
-      <div class="subtle">Muletillas detectadas</div>
-      <ul>
-        <li *ngFor="let s of lang!.filler_examples">…{{ s }}…</li>
-      </ul>
-    </div> -->
+    <h4 class="block-title">💭 Reflexión inmediata</h4>
+    <p>{{ reflectionText }}</p>
   </article>
 
-  <article class="feedback-block col-12">
-    <h4 class="block-title">SUGERENCIAS DEL SISTEMA</h4>
-    <p>{{ feedbackData?.suggestions || '—' }}</p>
+  <!-- Ejercicios (izq) + Consejos/Recursos (der) -->
+  <article class="feedback-block col-7">
+    <h4 class="block-title">🎯 Ejercicios para tu próxima práctica</h4>
+    <ul class="bulleted" *ngIf="suggestionsList?.length; else noSug">
+      <li *ngFor="let s of suggestionsList">{{ s }}</li>
+    </ul>
+    <ng-template #noSug>—</ng-template>
+
+    <div style="margin-top:10px;">
+      <button class="primary-cta" (click)="goToPractice()">▶️ Practicar ahora (90 s)</button>
+    </div>
+  </article>
+
+  <article class="feedback-block col-5">
+    <h4 class="block-title">🧩 Consejos y recursos</h4>
+    <ul class="resource-list">
+      <li *ngFor="let r of resourcesList">
+        <div class="res-top">
+          <span class="chip" [attr.data-tag]="r.tag">{{ r.tag }}</span>
+          <a class="res-link" [href]="r.url" target="_blank" rel="noopener">
+            {{ r.title }}
+          </a>
+        </div>
+        <div class="res-note">{{ r.note }}</div>
+      </li>
+    </ul>
   </article>
 </section>
 
+<!-- ===== Acciones ===== -->
 <div class="feedback-actions">
   <a routerLink="/" class="link-button">Volver al inicio</a>
   <button mat-flat-button class="download-button">Descargar reporte</button>
