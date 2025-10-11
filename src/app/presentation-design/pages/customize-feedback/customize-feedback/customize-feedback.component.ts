@@ -307,8 +307,11 @@ export class CustomizeFeedbackComponent implements OnInit {
     if (dom === 'entusiasta') {
       return 'Tu tono reflejó energía y entusiasmo. En la próxima, cuida que el ritmo no se acelere y deja pequeñas pausas para mantener claridad.';
     }
-    if (dom === 'confiada' || dom === 'motivada') {
+    if (dom === 'confiada') {
       return 'Tu voz transmitió seguridad. Intenta sostener esa firmeza también en las partes más técnicas con frases claras y cierres breves.';
+    }
+    if (dom === 'motivada') {
+      return 'Tu voz transmitió motivación. Intenta sostener esa energía también en las partes más técnicas con frases claras y cierres breves.';
     }
     if (anxietyPct > 40) {
       return 'El tono fue estable pero con algo de tensión. Prueba una respiración lenta antes de empezar y marca la primera pausa tras la primera frase.';
