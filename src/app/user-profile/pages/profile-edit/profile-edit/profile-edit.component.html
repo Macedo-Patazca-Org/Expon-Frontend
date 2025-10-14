@@ -1,38 +1,38 @@
 <div class="configuration-container">
-  <h2>Configuration</h2>
+  <h2>Configuración</h2>
 
   <div class="profile-settings-card">
-    <h3>PROFILE SETTINGS</h3>
+    <h3>CONFIGURACIÓN DEL PERFIL</h3>
 
     <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" class="form-grid">
 
       <div class="form-group">
-        <label>Full Name</label>
+        <label>Nombre completo</label>
         <input type="text" formControlName="full_name" />
       </div>
 
       <div class="form-group">
-        <label>First Name</label>
+        <label>Nombre</label>
         <input type="text" formControlName="first_name" />
       </div>
 
       <div class="form-group">
-        <label>Last Name</label>
+        <label>Apellido</label>
         <input type="text" formControlName="last_name" />
       </div>
 
       <div class="form-group">
-        <label>University</label>
+        <label>Universidad</label>
         <input type="text" formControlName="university" />
       </div>
 
       <div class="form-group">
-        <label>Career</label>
+        <label>Carrera</label>
         <input type="text" formControlName="career" />
       </div>
 
       <div class="form-group">
-        <label>Gender</label>
+        <label>Género</label>
         <select formControlName="gender">
           <option value="" disabled>Select gender</option>
           <option>Male</option>
@@ -42,12 +42,12 @@
       </div>
 
       <div class="form-group">
-        <label>Profile Picture</label>
-        <input type="text" formControlName="profile_picture" placeholder="URL of your picture" />
+        <label>Foto de perfil</label>
+        <input type="text" formControlName="profile_picture" placeholder="URL de tu foto" />
       </div>
 
       <div class="form-group">
-        <label>Preferred Presentation</label>
+        <label>Presentación preferida</label>
         <select formControlName="preferred_presentation">
           <option value="" disabled>Select preference</option>
           <option>Formal</option>
@@ -57,7 +57,7 @@
       </div>
 
       <div class="edit-button-container full-width">
-        <button type="submit" class="edit-button">Save</button>
+        <button type="submit" class="edit-button">Guardar</button>
       </div>
 
     </form>

@@ -1,5 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { PresentationService } from '../../../../student-management/services/presentation.service';
 
@@ -49,7 +49,7 @@ type ResourceLink = {
 @Component({
   selector: 'app-customize-feedback',
   standalone: true,
-  imports: [CommonModule, NgChartsModule],
+  imports: [CommonModule, NgChartsModule, RouterModule],
   templateUrl: './customize-feedback.component.html',
   styleUrls: ['./customize-feedback.component.css']
 })

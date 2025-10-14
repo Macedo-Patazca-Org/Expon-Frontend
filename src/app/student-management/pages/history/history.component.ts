@@ -36,7 +36,7 @@ export class HistoryComponent implements OnInit, AfterViewInit {
     private snackBar: MatSnackBar
   ) {}
 
-  displayedColumns: string[] = ['presentation', 'date', 'emotion', 'action', 'favorite', 'delete'];
+  displayedColumns: string[] = ['presentation', 'date', 'emotion', 'action', 'delete'];
   dataSource = new MatTableDataSource<any>([]);
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -68,9 +68,9 @@ export class HistoryComponent implements OnInit, AfterViewInit {
     return date.toLocaleDateString();
   }
 
-  toggleFavorite(element: any): void {
-    element.favorite = !element.favorite;
-  }
+  // toggleFavorite(element: any): void {
+  //   element.favorite = !element.favorite;
+  // }
 
   goToFeedback(presentationId: string): void {
     this.router.navigate(['/design/feedback-config', presentationId]);

@@ -20,22 +20,22 @@
       <nav class="menu">
         <a routerLink="/home" title="Home">
           <i class="fas fa-home"></i>
-          <span *ngIf="!isCollapsed">Home</span>
+          <span *ngIf="!isCollapsed">Inicio</span>
         </a>
 
         <a routerLink="/presentations" title="Presentation">
           <i class="fas fa-chalkboard-teacher"></i>
-          <span *ngIf="!isCollapsed">Presentation</span>
+          <span *ngIf="!isCollapsed">Presentación</span>
         </a>
 
         <a routerLink="/history" title="History">
           <i class="fas fa-history"></i>
-          <span *ngIf="!isCollapsed">History</span>
+          <span *ngIf="!isCollapsed">Historial</span>
         </a>
 
-        <a routerLink="/profile" title="Configuration">
+        <a routerLink="/profile" title="Configuración">
           <i class="fas fa-cog"></i>
-          <span *ngIf="!isCollapsed">Configuration</span>
+          <span *ngIf="!isCollapsed">Configuración</span>
         </a>
       </nav>
     </div>
@@ -51,7 +51,7 @@
 
       <button class="logout" (click)="logout()">
         <i class="fas fa-sign-out-alt"></i>
-        <span *ngIf="!isCollapsed">Sign out</span>
+        <span *ngIf="!isCollapsed">Cerrar sesión</span>
       </button>
       
     </div>

@@ -1,11 +1,11 @@
 <div class="presentation-wrapper">
-  <h3 class="section-title">Presentation</h3>
+  <h3 class="section-title">Presentación</h3>
 
   <div class="presentation-container">
-    <h2 class="presentation-title">Record or upload your presentation</h2>
+    <h2 class="presentation-title">Graba o sube tu presentación</h2>
 
     <!-- 🔹 FILTER BAR -->
-    <div class="filter-wrapper">
+    <!-- <div class="filter-wrapper">
       <div class="filter-select-box">
         <span class="filter-icon">💡</span>
         <select class="custom-purpose-select" [(ngModel)]="selectedPurpose">
@@ -18,11 +18,10 @@
       <button class="reset-filter-btn" (click)="resetPurpose()">
         <span class="reset-icon">⟳</span> Restablecer filtro
       </button>
-    </div>
+    </div> -->
 
     <p class="instruction">
-      Have your presentation ready? Upload or record it to the platform to
-      receive personalized analysis.
+      ¿Tienes tu presentación lista? Súbela o grábala en la plataforma para recibir un análisis personalizado.
     </p>
 
     <div class="record-box-wrapper">
@@ -31,22 +30,22 @@
           <mat-icon fontIcon="mic" class="record-icon"></mat-icon>
         </div>
         <button *ngIf="!isRecording" mat-raised-button color="primary" class="record-btn" (click)="startRecording()">
-          🎤 Start recording audio
+          🎤 Empezar a grabar audio
         </button>
         <button *ngIf="isRecording" mat-raised-button color="warn" class="record-btn" (click)="stopRecording()">
-          ⏹ Stop & upload
+          ⏹ Detener y subir
         </button>
       </div>
     </div>
     <!-- ⏱️ GRABACIÓN EN CURSO -->
     <div *ngIf="isRecording && !isLoading" class="recording-indicator">
-      🔴 Recording... <strong>{{ recordingTime }}s</strong>
+      🔴 Grabando... <strong>{{ recordingTime }}s</strong>
     </div>
 
-    <p class="or-separator">OR</p>
+    <p class="or-separator">O</p>
 
     <div class="upload-box" (click)="uploadInput.click()">
-      Upload audio file (.mp3, .wav)
+      Subir archivo de audio (.mp3, .wav)
     </div>
     <input
       type="file"
@@ -57,13 +56,13 @@
     />
 
     <p class="selected-file" *ngIf="selectedFile">
-      File selected: {{ selectedFile.name }}
+      Archivo seleccionado: {{ selectedFile.name }}
     </p>
   </div>
 
   <!-- 🔄 MODAL DE CARGA -->
   <div *ngIf="isLoading" class="loading-overlay">
     <mat-spinner diameter="60"></mat-spinner>
-    <p>Processing your presentation...</p>
+    <p>Procesando tu presentación...</p>
   </div>
 </div>

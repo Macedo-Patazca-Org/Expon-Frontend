@@ -1,32 +1,32 @@
 <!-- history.component.html -->
 <div class="history-wrapper">
-    <h2 class="page-title">History</h2>
-    <p class="subtitle">Your presentation history</p>
-    <p class="description">Here you'll find a summary of all your previous presentations, along with their analysis and feedback.</p>
+    <h2 class="page-title">Historial</h2>
+    <p class="subtitle">Tu historial de presentaciones</p>
+    <p class="description">Aquí encontrarás un resumen de todas tus presentaciones anteriores, junto con su análisis y comentarios.</p>
 
     <div class="table-container">
         <mat-table [dataSource]="dataSource" matSort class="mat-elevation-z1 custom-table">
             <!-- Presentation Column -->
             <ng-container matColumnDef="presentation">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>Presentation</mat-header-cell>
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Presentación</mat-header-cell>
             <mat-cell *matCellDef="let element">{{ element.title }}</mat-cell>
             </ng-container>
 
             <!-- Date Column -->
             <ng-container matColumnDef="date">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>Date</mat-header-cell>
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Fecha</mat-header-cell>
             <mat-cell *matCellDef="let element">{{ element.date }}</mat-cell>
             </ng-container>
 
             <!-- Emotion Column -->
             <ng-container matColumnDef="emotion">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>Dominant emotion</mat-header-cell>
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Emoción dominante</mat-header-cell>
             <mat-cell *matCellDef="let element">{{ element.emotion }}</mat-cell>
             </ng-container>
 
             <!-- Action Column -->
             <ng-container matColumnDef="action">
-            <mat-header-cell *matHeaderCellDef>Action</mat-header-cell>
+            <mat-header-cell *matHeaderCellDef>Acción</mat-header-cell>
             <mat-cell *matCellDef="let element">
                 <button mat-raised-button color="accent" class="view-report-btn" (click)="goToFeedback(element.id)">
                     <span class="btn-text-report">Ver informe</span>
@@ -36,8 +36,8 @@
             </ng-container>
 
             <!-- Favorites Column -->
-            <ng-container matColumnDef="favorite">
-            <mat-header-cell *matHeaderCellDef>Favorites</mat-header-cell>
+            <!-- <ng-container matColumnDef="favorite">
+            <mat-header-cell *matHeaderCellDef>Favoritos</mat-header-cell>
             <mat-cell *matCellDef="let element">
                 <mat-icon
                     class="star-icon"
@@ -47,11 +47,11 @@
                 </mat-icon>
 
             </mat-cell>
-            </ng-container>
+            </ng-container> -->
 
             <!-- Delete Column -->
              <ng-container matColumnDef="delete">
-                <mat-header-cell *matHeaderCellDef>Delete</mat-header-cell>
+                <mat-header-cell *matHeaderCellDef>Eliminar</mat-header-cell>
                 <mat-cell *matCellDef="let element">
                     <button mat-icon-button color="warn" (click)="deletePresentation(element.id)">
                         <mat-icon>delete</mat-icon>
