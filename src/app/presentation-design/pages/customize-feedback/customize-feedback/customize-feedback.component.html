@@ -1,51 +1,139 @@
-<h2 class="title">Feedback</h2>
-<h3 class="subtitle">This is a summary of your presentation.</h3>
+<!-- ===== Encabezado ===== -->
+<h2 class="title">Análisis y Feedback</h2>
+<h3 class="subtitle">
+  Tu tono refleja cómo te comunicas. Descubre qué transmite tu voz y cómo fortalecerla para tu próxima presentación.
+</h3>
 
-<div *ngIf="loading">Loading feedback...</div>
-<div *ngIf="error">❌ Could not load feedback.</div>
+<div *ngIf="loading">Cargando feedback...</div>
+<div *ngIf="error">❌ No se pudo cargar el feedback.</div>
 
-<div class="feedback-grid" *ngIf="feedbackData">
-  <div class="feedback-block">
-    <h4>SENTIMENT ANALYSIS</h4>
-    <p>{{ feedbackData.general_feedback }}</p>
-    <p><strong>Dominant emotion:</strong> {{ feedbackData.dominant_emotion }}</p>
-    <p><strong>Confidence:</strong> {{ feedbackData.confidence * 100 | number:'1.0-0' }}%</p>
+<!-- ===== Fila 0: KPI cards ===== -->
+<section class="kpi-row" *ngIf="!loading && !error">
+  <!-- Emoción dominante -->
+  <article class="kpi-card">
+    <div class="kpi-title">Emoción dominante</div>
+    <div class="kpi-main">
+      <span class="kpi-dot" [style.background]="emotionColors[domKey]"></span>
+      <span class="kpi-strong">{{ emotionLabels[domKey] }}</span>
+      <span *ngIf="['confiada','motivada','entusiasta'].includes(domKey)" class="kpi-check">✔</span>
+    </div>
+    <div class="kpi-sub">
+      <span class="kpi-badge" [ngClass]="dominantClass">{{ domPct }}%</span>
+      <span>&nbsp;estimado</span>
+    </div>
+  </article>
 
-    <div *ngFor="let emo of feedbackData.emotion_probabilities | keyvalue">
-      <span>{{ emo.key }}: {{ getEmotionPercentage(emo.key) }}%</span>
-      <div class="bar">
-        <div class="fill" [style.width.%]="getEmotionPercentage(emo.key)"></div>
+  <!-- Ansiedad -->
+  <article class="kpi-card">
+    <div class="kpi-title">Ansiedad estimada</div>
+    <div
+      class="kpi-badge"
+      [ngClass]="{
+        'good': getEmotionPercentage('ansiosa') <= 25,
+        'warn': getEmotionPercentage('ansiosa') > 25 && getEmotionPercentage('ansiosa') <= 50,
+        'danger': getEmotionPercentage('ansiosa') > 50
+      }">
+      {{ getEmotionPercentage('ansiosa') }}%
+    </div>
+    <div class="kpi-sub">
+      <span *ngIf="getEmotionPercentage('ansiosa') <= 25">Buen control emocional.</span>
+      <span *ngIf="getEmotionPercentage('ansiosa') > 25 && getEmotionPercentage('ansiosa') <= 50">Ligera tensión manejable.</span>
+      <span *ngIf="getEmotionPercentage('ansiosa') > 50">Trabaja la calma al inicio.</span>
+    </div>
+  </article>
+
+  <article class="kpi-card">
+    <div class="kpi-title">Palabras</div>
+    <div class="kpi-strong">{{ lang?.total_words ?? '—' }}</div>
+    <div class="kpi-sub">conteo total</div>
+  </article>
+
+  <article class="kpi-card">
+    <div class="kpi-title">Muletillas</div>
+    <div class="kpi-strong">{{ lang?.filler_count ?? 0 }}</div>
+    <div class="kpi-sub">detectadas</div>
+  </article>
+</section>
+
+<!-- ===== Grid principal ===== -->
+<section class="dash-grid" *ngIf="!loading && !error">
+  <!-- Donut -->
+  <article class="feedback-block col-7">
+    <h4 class="block-title">🎧 Cómo se distribuyeron las emociones en tu voz</h4>
+    <div class="subtle">Cada color representa el tono predominante detectado en tu audio.</div>
+
+    <div style="margin-top:10px;">
+      <div class="subtle">Equilibrio emocional: {{ starsOverall | number:'1.1-1' }} / 5</div>
+      <div class="stars">{{ starsLine(starsOverall) }}</div>
+    </div>
+
+    <div class="chart-box">
+      <canvas baseChart [type]="'doughnut'" [data]="doughnutData" [options]="doughnutOptions"></canvas>
+    </div>
+
+    <div class="legend-grid">
+      <div class="legend-item" *ngFor="let key of emotionsOrder">
+        <span class="legend-dot" [style.background]="emotionColors[key]"></span>
+        <span>{{ emotionLabels[key] || key }}</span>
+        <span class="subtle">· {{ getEmotionPercentage(key) }}%</span>
       </div>
     </div>
-  </div>
+  </article>
 
-  <div class="feedback-block">
-    <h4>CONFIDENCE LEVEL</h4>
-    <p>{{ feedbackData.confidence_feedback }}</p>
-  </div>
+  <!-- Interpretación -->
+  <article class="feedback-block col-5">
+    <h4 class="block-title">INTERPRETACIÓN</h4>
+    <ul class="bulleted">
+      <li *ngIf="feedbackData?.general_feedback as g"><strong>🟢 Lo que comunica tu voz:</strong> {{ g }}</li>
+      <li *ngIf="feedbackData?.confidence_feedback as cf"><strong>🟡 Seguridad:</strong> {{ cf }}</li>
+      <li *ngIf="feedbackData?.anxiety_feedback as af"><strong>🔵 Regulación:</strong> {{ af }}</li>
+    </ul>
+    <p *ngIf="!feedbackData">—</p>
+  </article>
 
-  <div class="feedback-block">
-    <h4>ANXIETY LEVEL</h4>
-    <p>{{ feedbackData.anxiety_feedback }}</p>
-  </div>
+  <!-- Lenguaje -->
+  <article class="feedback-block col-7">
+    <h4 class="block-title">LENGUAJE</h4>
+    <p>{{ feedbackData?.language_feedback || '—' }}</p>
+  </article>
 
-  <div class="feedback-block">
-    <h4>LANGUAGE FEEDBACK</h4>
-    <p>{{ feedbackData.language_feedback }}</p>
-  </div>
+  <!-- Reflexión -->
+  <article class="feedback-block col-5">
+    <h4 class="block-title">💭 Reflexión inmediata</h4>
+    <p>{{ reflectionText }}</p>
+  </article>
 
-  <div class="feedback-block">
-    <h4>SUGGESTIONS FOR IMPROVEMENT</h4>
-    <p>{{ feedbackData.suggestions }}</p>
-  </div>
+  <!-- Ejercicios (izq) + Consejos/Recursos (der) -->
+  <article class="feedback-block col-7">
+    <h4 class="block-title">🎯 Ejercicios para tu próxima práctica</h4>
+    <ul class="bulleted" *ngIf="suggestionsList?.length; else noSug">
+      <li *ngFor="let s of suggestionsList">{{ s }}</li>
+    </ul>
+    <ng-template #noSug>—</ng-template>
 
-  <div class="feedback-block">
-    <h4>How did you feel when presenting?</h4>
-    <textarea placeholder="Write your feelings here..."></textarea>
-  </div>
-</div>
+    <div style="margin-top:10px;">
+      <button class="primary-cta" (click)="goToPractice()">▶️ Practicar ahora</button>
+    </div>
+  </article>
 
+  <article class="feedback-block col-5">
+    <h4 class="block-title">🧩 Consejos y recursos</h4>
+    <ul class="resource-list">
+      <li *ngFor="let r of resourcesList">
+        <div class="res-top">
+          <span class="chip" [attr.data-tag]="r.tag">{{ r.tag }}</span>
+          <a class="res-link" [href]="r.url" target="_blank" rel="noopener">
+            {{ r.title }}
+          </a>
+        </div>
+        <div class="res-note">{{ r.note }}</div>
+      </li>
+    </ul>
+  </article>
+</section>
+
+<!-- ===== Acciones ===== -->
 <div class="feedback-actions">
-  <a routerLink="/" class="link-button">Go to the Home</a>
-  <button mat-flat-button class="download-button">Download report</button>
+  <a routerLink="/" class="link-button">Volver al inicio</a>
+  <button mat-flat-button class="download-button">Descargar reporte</button>
 </div>
