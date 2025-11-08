@@ -63,6 +63,8 @@ export class CustomizeFeedbackComponent implements OnInit {
 
   feedbackData: Feedback | null = null;
 
+  languageBullets: string[] = [];
+
   // Datos para el gráfico de emociones
   chartProbs: Record<string, number> = {}; // 0..1
   chartDominant: string | null = null;
@@ -125,6 +127,30 @@ export class CustomizeFeedbackComponent implements OnInit {
 
         // 2) Textos de feedback
         this.feedbackData = feedback ? this.mapFeedback(feedback) : null;
+
+        // NUEVO: parsear language_feedback con guiones como bullets
+const rawLang = (this.feedbackData?.language_feedback || '').trim();
+
+// 1) Limpieza defensiva: quitar "Oración 1:", "Oración 2:", etc. y normalizar bullets/dashes
+const cleaned = rawLang
+  .replace(/Oraci[oó]n\s*\d+\s*:\s*/gi, '')   // quita "Oración n:"
+  .replace(/[•–—]/g, '-');                    // normaliza posibles viñetas/dashes a "-"
+
+// 2) Split principal: cada guion indica un bullet
+this.languageBullets = cleaned
+  .split(/\s*-\s+/)                            // corta " - " o "- "
+  .map(s => s.trim())
+  .filter(Boolean);
+
+// 3) Fallback: si no hubo suficientes guiones, usa saltos de línea como respaldo
+if (this.languageBullets.length < 2) {
+  this.languageBullets = cleaned
+    .split(/\r?\n+/)
+    .map(s => s.replace(/^[-•]\s*/, '').trim())
+    .filter(Boolean);
+}
+
+
 
         // 3) Transcript y análisis de lenguaje
         this.transcript = (detail?.transcript || '').trim() || null;

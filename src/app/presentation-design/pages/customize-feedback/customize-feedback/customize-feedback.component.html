@@ -92,10 +92,18 @@
   </article>
 
   <!-- Lenguaje -->
-  <article class="feedback-block col-7">
-    <h4 class="block-title">LENGUAJE</h4>
-    <p>{{ feedbackData?.language_feedback || '—' }}</p>
-  </article>
+<article class="feedback-block col-7">
+  <h4 class="block-title">LENGUAJE</h4>
+
+  <ng-container *ngIf="languageBullets?.length; else noLang">
+    <ul class="bulleted">
+      <li *ngFor="let item of languageBullets">{{ item }}</li>
+    </ul>
+  </ng-container>
+
+  <ng-template #noLang>—</ng-template>
+</article>
+
 
   <!-- Reflexión -->
   <article class="feedback-block col-5">
