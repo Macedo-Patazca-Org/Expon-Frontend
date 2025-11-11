@@ -36,7 +36,7 @@ export class HistoryComponent implements OnInit, AfterViewInit {
     private snackBar: MatSnackBar
   ) {}
 
-  displayedColumns: string[] = ['presentation', 'date', 'emotion', 'action', 'delete'];
+  displayedColumns: string[] = ['presentation', 'date', 'emotion', 'action', 'listen', 'delete'];
   dataSource = new MatTableDataSource<any>([]);
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -75,6 +75,11 @@ export class HistoryComponent implements OnInit, AfterViewInit {
   goToFeedback(presentationId: string): void {
     this.router.navigate(['/design/feedback-config', presentationId]);
   }
+
+  goToAudioPlayer(presentationId: string): void {
+  this.router.navigate(['/audio-player', presentationId]);
+}
+
 
   playAudio(audioUrl: string) {
     const audio = new Audio(audioUrl);

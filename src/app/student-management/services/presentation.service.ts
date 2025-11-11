@@ -8,6 +8,7 @@ import {
 } from '../../student-management/models/presentation.model';
 import { AudioUploadResponse } from '../../student-management/models/audio-response.model';
 import { EmotionSummary } from '../../student-management/models/emotion.model';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -49,4 +50,13 @@ export class PresentationService {
   getPresentationById(presentationId: string): Observable<PresentationDetail> {
     return this.http.get<PresentationDetail>(`${this.API_URL}/presentation/${presentationId}`);
   }
+
+  getAudioUrl(presentationId: string) {
+  // el backend responde un string (la URL firmada), por eso usamos responseType 'text'
+    return this.http.get<any>(`${this.API_URL}/presentation/${presentationId}/audio-url`).pipe(
+      map((res) => typeof res === 'string' ? res : res.url)
+    );
+
+}
+
 }

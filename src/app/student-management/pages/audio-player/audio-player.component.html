@@ -1,0 +1,15 @@
+<section class="player-wrap">
+  <h2>Reproducir presentación</h2>
+  <div class="meta">ID: {{ id }}</div>
+
+  <div *ngIf="loading">Cargando audio…</div>
+  <div *ngIf="!loading && error" class="alert-error">{{ error }}</div>
+
+  <!-- Temporal: aún sin URL real -->
+  <p *ngIf="!loading && !error && !audioUrl">
+    Vista creada correctamente. Falta conectar el audio del backend.
+  </p>
+
+  <!-- Cuando tengamos URL: -->
+  <audio *ngIf="audioUrl" [src]="audioUrl" controls preload="metadata"></audio>
+</section>

@@ -170,6 +170,27 @@ mat-header-cell, mat-cell {
   color: #FFD700 !important; /* dorado/amarillo brillante */
 }
 
+.listen-btn {
+  padding: 0.35rem 0.5rem;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 0.85rem;
+  text-transform: none;
+  color: white;
+  background-color: #2B647F !important;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+  margin-left: 0.5rem;
+}
+
+.listen-btn:hover {
+  background-color: #004d61 !important;
+}
+
+.btn-text-listen {
+  color: #fff;
+  margin-left: 0.25rem;
+}
+
 
 /* Responsive */
 @media screen and (max-width: 768px) {

@@ -36,6 +36,7 @@ import { OverviewComponent } from './analytics/pages/overview/overview/overview.
 import { UserProgressComponent } from './analytics/pages/user-progress/user-progress/user-progress.component';
 import { DashboardLayoutComponent } from './shared/layouts/dashboard-layout/dashboard-layout.component';
 import { authGuard } from './core/guards/auth.guard';
+import { AudioPlayerComponent } from './student-management/pages/audio-player/audio-player.component';
 
 export const routes: Routes = [
   // Rutas sin dashboard
@@ -62,6 +63,7 @@ export const routes: Routes = [
       //{ path: 'presentations', component: PresentationListComponent },
       //{ path: 'presentations/upload', component: UploadRecordingComponent },
       { path: 'history', component: HistoryComponent },
+      { path: 'audio-player/:id', component: AudioPlayerComponent },
 
       { path: 'design/template', component: TemplateConfigComponent },
       { path: 'design/feedback-config/:id', component: CustomizeFeedbackComponent },

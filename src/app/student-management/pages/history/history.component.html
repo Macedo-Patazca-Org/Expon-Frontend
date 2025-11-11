@@ -49,6 +49,18 @@
             </mat-cell>
             </ng-container> -->
 
+            <!-- Listen Column -->
+             <ng-container matColumnDef="listen">
+                <mat-header-cell *matHeaderCellDef>Escuchar</mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    <button mat-raised-button color="primary" class="listen-btn" (click)="goToAudioPlayer(element.id)">
+                        <mat-icon>play_arrow</mat-icon>
+                        <span class="btn-text-listen">Reproducir</span>
+                    </button>
+                </mat-cell>
+            </ng-container>
+
+
             <!-- Delete Column -->
              <ng-container matColumnDef="delete">
                 <mat-header-cell *matHeaderCellDef>Eliminar</mat-header-cell>
