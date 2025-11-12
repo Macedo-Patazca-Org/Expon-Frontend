@@ -2,20 +2,20 @@
   <div class="login-container">
     <div class="login-form-container">
       <div class="login-form">
-        <h2>Sign in</h2>
+        <h2>Iniciar Sesión</h2>
         <form (ngSubmit)="onSubmit()" #loginForm="ngForm">
-          <input type="email" name="email" [(ngModel)]="credentials.email" required placeholder="Email" />
-          <input type="password" name="password" [(ngModel)]="credentials.password" required placeholder="Password" />
-          <button type="submit">Sign in</button>
+          <input type="email" name="email" [(ngModel)]="credentials.email" required placeholder="Correo" />
+          <input type="password" name="password" [(ngModel)]="credentials.password" required placeholder="Contraseña" />
+          <button type="submit">Iniciar sesión</button>
           <div *ngIf="errorMessage" class="error-message">
             {{ errorMessage }}
           </div>
           <div class="login-options">
-            <label><input type="checkbox" /> Remember me</label>
-            <a href="/recover-password" class="forgot-password">Forgot password?</a>
+            <label><input type="checkbox" /> Recuérdame</label>
+            <a routerLink="/forgot-password" class="forgot-password">¿Olvidaste tu contraseña?</a>
           </div>
         </form>
-        <p class="signup-link">Don’t have an account? <a href="/register">Sign up now</a></p>
+        <p class="signup-link">¿No tienes una cuenta? <a href="/register">Regístrate ahora</a></p>
       </div>
     </div>
     <div class="login-illustration"></div>
@@ -23,5 +23,3 @@
   <div class="login-img">
   </div>
 </div>
-
-

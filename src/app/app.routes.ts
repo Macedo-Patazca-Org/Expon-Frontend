@@ -37,12 +37,14 @@ import { UserProgressComponent } from './analytics/pages/user-progress/user-prog
 import { DashboardLayoutComponent } from './shared/layouts/dashboard-layout/dashboard-layout.component';
 import { authGuard } from './core/guards/auth.guard';
 import { AudioPlayerComponent } from './student-management/pages/audio-player/audio-player.component';
+import { ForgotPasswordComponent } from './authentication/pages/forgot-password/forgot-password.component';
 
 export const routes: Routes = [
   // Rutas sin dashboard
   { path: '', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   {path: 'recover-password', component: RecoverPasswordComponent},
+  { path: 'forgot-password', component: ForgotPasswordComponent },
 
   // Rutas con dashboard layout
   {
