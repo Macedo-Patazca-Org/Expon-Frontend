@@ -140,8 +140,169 @@
   </article>
 </section>
 
+<!-- ===== CONTENIDO PARA EL REPORTE (PDF) ===== -->
+<div
+  #reportContent
+  class="report-container"
+  [hidden]="!showReportForPdf"
+>
+
+  <!-- ===== Portada ===== -->
+  <div class="report-cover report-page">
+    <!-- Encabezado con logo -->
+    <div class="report-header">
+      <!-- Ajusta la ruta del logo según tu proyecto -->
+      <img src="assets/images/logo-img.png" alt="Logo Expon" class="report-logo" />
+      <div class="report-header-text">
+        <div class="report-university">UNIVERSIDAD PERUANA DE CIENCIAS APLICADAS</div>
+        <div class="report-project">Proyecto Expon – Análisis Emocional de Presentaciones</div>
+      </div>
+    </div>
+
+    <!-- Título centrado -->
+    <div class="report-cover-center">
+      <h1>Reporte de análisis emocional de la presentación</h1>
+      <p class="report-subtitle">
+        Resultados generados automáticamente a partir del audio, transcripción y modelo de emociones.
+      </p>
+
+      <div class="report-meta">
+        <p><strong>Fecha de análisis:</strong> {{ currentDate | date:'dd/MM/yyyy' }}</p>
+        <!-- Si luego quieres puedes interpolar más datos (nombre estudiante, curso, etc.) -->
+        <!-- <p><strong>Estudiante:</strong> {{ userName }}</p> -->
+        <!-- <p><strong>Curso:</strong> Proyecto de Tesis</p> -->
+      </div>
+    </div>
+
+    <div class="report-cover-footer">
+      <p>Aplicación web Expon – Análisis emocional para presentaciones académicas.</p>
+    </div>
+  </div>
+
+  <div class="page-break"></div>
+
+  <!-- ===== Página 1 – Resumen general ===== -->
+  <div class="report-page">
+    <h2>1. Resumen general de la presentación</h2>
+    <p>
+      Este reporte resume los resultados del análisis automático de tu presentación, 
+      considerando la emoción dominante, el nivel de ansiedad estimado, el uso del lenguaje y 
+      las recomendaciones para futuras prácticas.
+    </p>
+
+    <h3>1.1 Indicadores principales</h3>
+    <p><strong>Emoción dominante:</strong> {{ emotionLabels[domKey] }} ({{ domPct }}%)</p>
+    <p><strong>Ansiedad estimada:</strong> {{ getEmotionPercentage('ansiosa') }}%</p>
+    <p><strong>Palabras totales:</strong> {{ lang?.total_words ?? '—' }}</p>
+    <p><strong>Muletillas detectadas:</strong> {{ lang?.filler_count ?? 0 }}</p>
+    <p><strong>Equilibrio emocional global:</strong> {{ starsOverall | number:'1.1-1' }} / 5</p>
+
+    <h3>1.2 Distribución de emociones</h3>
+    <p>
+      La siguiente tabla resume el porcentaje estimado de cada emoción detectada en tu voz 
+      durante la presentación.
+    </p>
+
+    <table class="report-table">
+      <thead>
+        <tr>
+          <th>Emoción</th>
+          <th>Porcentaje estimado</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let key of emotionsOrder">
+          <td>{{ emotionLabels[key] || key }}</td>
+          <td>{{ getEmotionPercentage(key) }}%</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="page-break"></div>
+
+  <!-- ===== Página 2 – Interpretación y lenguaje ===== -->
+  <div class="report-page">
+    <h2>2. Interpretación cualitativa</h2>
+
+    <h3>2.1 Lo que comunica tu voz</h3>
+    <p *ngIf="feedbackData?.general_feedback as g">
+      {{ g }}
+    </p>
+    <p *ngIf="!feedbackData">No se encontró información de interpretación general.</p>
+
+    <h3>2.2 Seguridad percibida</h3>
+    <p *ngIf="feedbackData?.confidence_feedback as cf">
+      {{ cf }}
+    </p>
+    <p *ngIf="!feedbackData">No se registró feedback específico sobre la seguridad percibida.</p>
+
+    <h3>2.3 Regulación emocional</h3>
+    <p *ngIf="feedbackData?.anxiety_feedback as af">
+      {{ af }}
+    </p>
+    <p *ngIf="!feedbackData">No se registró feedback específico sobre regulación emocional.</p>
+
+    <h2>3. Análisis del lenguaje</h2>
+    <ng-container *ngIf="languageBullets?.length; else noLangReport">
+      <ul>
+        <li *ngFor="let item of languageBullets">{{ item }}</li>
+      </ul>
+    </ng-container>
+    <ng-template #noLangReport>
+      <p>No se encontraron observaciones específicas sobre el lenguaje.</p>
+    </ng-template>
+  </div>
+
+  <div class="page-break"></div>
+
+  <!-- ===== Página 3 – Reflexión y recomendaciones ===== -->
+  <div class="report-page">
+    <h2>4. Reflexión y recomendaciones</h2>
+
+    <h3>4.1 Reflexión inmediata</h3>
+    <p>
+      {{ reflectionText }}
+    </p>
+
+    <h3>4.2 Ejercicios sugeridos para la próxima práctica</h3>
+    <ng-container *ngIf="suggestionsList?.length; else noSugReport">
+      <ul>
+        <li *ngFor="let s of suggestionsList">{{ s }}</li>
+      </ul>
+    </ng-container>
+    <ng-template #noSugReport>
+      <p>No se generaron ejercicios específicos para esta presentación.</p>
+    </ng-template>
+
+    <h3>4.3 Recursos adicionales recomendados</h3>
+    <ng-container *ngIf="resourcesList?.length; else noResReport">
+      <ul>
+        <li *ngFor="let r of resourcesList">
+          <strong>{{ r.title }}</strong><br />
+          <em>[{{ r.tag }}]</em><br />
+          {{ r.note }}<br />
+          <span>Enlace: {{ r.url }}</span>
+        </li>
+      </ul>
+    </ng-container>
+    <ng-template #noResReport>
+      <p>No se registraron recursos adicionales para esta sesión.</p>
+    </ng-template>
+  </div>
+</div>
+
+
+
 <!-- ===== Acciones ===== -->
 <div class="feedback-actions">
   <a routerLink="/home" class="link-button">Volver al inicio</a>
-  <button mat-flat-button class="download-button">Descargar reporte</button>
+  <button
+  mat-flat-button
+  class="download-button"
+  (click)="downloadReport()"
+>
+  Descargar reporte
+</button>
+
 </div>

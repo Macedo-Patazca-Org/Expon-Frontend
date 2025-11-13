@@ -1,4 +1,5 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ElementRef, ViewChild } from '@angular/core';
+import html2pdf from 'html2pdf.js';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { PresentationService } from '../../../../student-management/services/presentation.service';
@@ -54,6 +55,12 @@ type ResourceLink = {
   styleUrls: ['./customize-feedback.component.css']
 })
 export class CustomizeFeedbackComponent implements OnInit {
+  
+  @ViewChild('reportContent') reportContent!: ElementRef;
+  currentDate = new Date();
+
+  showReportForPdf = false;   // 👈 NUEVO
+
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private presentationService = inject(PresentationService);
@@ -350,7 +357,7 @@ if (this.languageBullets.length < 2) {
     const parts = cleaned
       .split(/\r?\n/)
       .map(s => s.trim())
-      .flatMap(line => line.split(/(?:^|\s)(?:\d+\)|\d+\.-|[•\-—]|[0-9]️⃣)\s+/).map(s => s.trim()))
+      .flatMap(line => line.split(/(?:^|\s)(?:\d+\)|\d+\.-|[•\-—]|[0-]️⃣)\s+/).map(s => s.trim()))
       .filter(Boolean);
     if (parts.length >= 2) return parts.slice(0, 5);
 
@@ -432,4 +439,43 @@ private buildResources(ctx: { anxietyPct: number; fillers: number; totalWords: n
   // Recorte suave (deja 6–10 enlaces máx. según contexto)
   return list.slice(0, 10);
 }
+
+  // ===== Generación de PDF =====
+ // ===== Generación de PDF =====
+// ===== Generación de PDF =====
+downloadReport(): void {
+  if (!this.reportContent) return;
+
+  // 1) Mostrar el reporte solo para la captura
+  this.showReportForPdf = true;
+
+  // Dejamos que Angular pinte el contenido antes de capturar
+  setTimeout(() => {
+    const element = this.reportContent.nativeElement as HTMLElement;
+
+    const options: any = {
+      margin: 10, // 2.54 cm
+      filename: `reporte-presentacion-${this.currentDate.toISOString().slice(0, 10)}.pdf`,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2, useCORS: true },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+      pagebreak: { mode: ['css', 'legacy'] }
+    };
+
+    html2pdf()
+      .set(options)
+      .from(element)
+      .save()
+      .then(() => {
+        this.showReportForPdf = false;  // 2) Volvemos a ocultar
+      })
+      .catch(() => {
+        this.showReportForPdf = false;  // por si falla
+      });
+  }, 0);
 }
+
+
+
+}
+

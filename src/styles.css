@@ -28,3 +28,151 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   font-weight: 500;
   text-align: center;
 }
+
+
+
+/* ===== Reporte PDF (formato memoria UPC) ===== */
+
+/* Lo movemos fuera de la pantalla para que no se vea,
+   pero html2pdf igual lo puede capturar. */
+.report-container {
+  /* ya NO la sacamos de la pantalla ni la ocultamos por CSS */
+  width: 595px; /* ancho real A4 en píxeles para html2canvas */
+  max-width: 595px;
+  margin: 0 auto;
+  background: #ffffff;
+  color: #000000;
+  padding: 32px;
+  font-family: "Times New Roman", serif;
+  font-size: 12pt;
+}
+
+
+/* === Ajuste de márgenes internos del PDF === */
+.report-page {
+  padding-top: 40px !important;   /* ↓ empuja el contenido hacia abajo */
+  padding-bottom: 30px !important;
+}
+
+
+/* Forzamos salto de página */
+.page-break {
+  page-break-after: always;
+}
+
+/* Cabecera con logo y texto institucional */
+.report-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 40px;
+}
+
+.report-logo {
+  max-height: 60px;
+}
+
+.report-header-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.report-university {
+  font-weight: 700;
+  font-size: 12pt;
+  text-transform: uppercase;
+}
+
+.report-project {
+  font-size: 11pt;
+  color: #555;
+}
+
+/* ==== PORTADA ==== */
+.report-cover {
+  display: flex;
+  flex-direction: column;
+  min-height: 820px;      /* altura cercana a una A4 con márgenes */
+  padding-top: 40px;      /* espacio arriba para el logo */
+  padding-bottom: 40px;   /* espacio abajo para el texto de pie */
+}
+
+/* bloque central: título + subtítulo + meta */
+.report-cover-center {
+  flex: 1;                              /* ocupa el espacio central disponible */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;              /* centra verticalmente */
+  text-align: center;
+  gap: 16px;
+
+  margin-top: 0;                        /* sin márgenes extra */
+  margin-bottom: 0;
+}
+
+
+.report-cover-center h1 {
+  font-size: 20pt;
+  font-weight: 700;
+  margin: 0;
+}
+
+.report-subtitle {
+  font-size: 12pt;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.report-meta {
+  margin-top: 16px;
+  font-size: 11pt;
+}
+
+.report-cover-footer {
+  text-align: center;
+  font-size: 10pt;
+  color: #555;
+}
+
+/* Secciones y títulos internos */
+.report-page h2 {
+  font-size: 14pt;
+  margin-top: 0;
+  margin-bottom: 8px;
+}
+
+.report-page h3 {
+  font-size: 12pt;
+  margin-top: 12px;
+  margin-bottom: 4px;
+}
+
+.report-page p {
+  text-align: justify;
+  margin-bottom: 6px;
+}
+
+.report-page ul {
+  margin: 4px 0 4px 18px;
+}
+
+/* Tabla de emociones */
+.report-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 8px;
+  font-size: 11pt;
+}
+
+.report-table th,
+.report-table td {
+  border: 1px solid #000;
+  padding: 4px 6px;
+}
+
+.report-table th {
+  background-color: #f2f2f2;
+  font-weight: 700;
+}
