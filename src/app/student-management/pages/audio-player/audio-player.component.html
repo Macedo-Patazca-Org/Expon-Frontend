@@ -5,11 +5,64 @@
   <div *ngIf="loading">Cargando audio…</div>
   <div *ngIf="!loading && error" class="alert-error">{{ error }}</div>
 
-  <!-- Temporal: aún sin URL real -->
-  <p *ngIf="!loading && !error && !audioUrl">
-    Vista creada correctamente. Falta conectar el audio del backend.
-  </p>
+  <!-- Tarjeta del reproductor -->
+  <div *ngIf="!error" class="player-card">
+    <div class="player-header">
+      <div class="time">
+        {{ formatTime(currentTime) }} / {{ formatTime(duration) }}
+      </div>
 
-  <!-- Cuando tengamos URL: -->
-  <audio *ngIf="audioUrl" [src]="audioUrl" controls preload="metadata"></audio>
+
+      <div class="speed">
+        Velocidad:
+        <select [(ngModel)]="playbackRate" (change)="changeSpeed()">
+          <option [value]="0.75">0.75x</option>
+          <option [value]="1">1.0x</option>
+          <option [value]="1.25">1.25x</option>
+          <option [value]="1.5">1.5x</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Waveform (WaveSurfer dibuja aquí) -->
+    <div #waveform class="waveform"></div>
+
+    <div class="player-controls">
+      <button type="button" (click)="togglePlay()" [disabled]="!waveReady">
+        {{ isPlaying ? 'Pausar' : 'Reproducir' }}
+      </button>
+      <button type="button" (click)="stop()" [disabled]="!waveReady">
+        Detener
+      </button>
+    </div>
+
+    <audio
+      #audioRef
+      preload="auto"
+      style="display: none"
+    ></audio>
+
+
+    <p *ngIf="!loading && !error && !audioUrl" class="no-audio">
+      Vista creada correctamente. Falta conectar el audio del backend.
+    </p>
+  </div>
+  <!-- Tarjeta de transcripción -->
+  <section
+    class="transcription-card"
+    *ngIf="transcription || transcriptionLoading || transcriptionError"
+  >
+    <h3>Transcripción</h3>
+
+    <p *ngIf="transcriptionLoading">Cargando transcripción…</p>
+
+    <p *ngIf="transcriptionError" class="alert-error">
+      {{ transcriptionError }}
+    </p>
+
+    <div *ngIf="transcription" class="transcription-body">
+      {{ transcription }}
+    </div>
+  </section>
+
 </section>

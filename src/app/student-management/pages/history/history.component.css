@@ -65,6 +65,15 @@
   background-color: rgba(0, 77, 97, 0.08);
 }
 
+.mat-icon {
+  fill: #fff;
+}
+
+.mat-mdc-raised-button:not(:disabled) {
+  background-color: #fff;
+  color: white;
+}
+
 .mdc-notched-outline{
     display: none !important;
 }
@@ -180,6 +189,7 @@ mat-header-cell, mat-cell {
   background-color: #2B647F !important;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
   margin-left: 0.5rem;
+  height: fit-content;
 }
 
 .listen-btn:hover {
