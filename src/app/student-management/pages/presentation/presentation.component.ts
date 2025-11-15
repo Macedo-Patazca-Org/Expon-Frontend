@@ -41,6 +41,7 @@ export class PresentationComponent {
   selectedFile: File | null = null;
   uploadResult: any = null;
   uploadError: boolean = false;
+  errorMessage: string = '';
   isLoading: boolean = false;
 
   // Grabación de audio
@@ -63,11 +64,50 @@ constructor(
 
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
-    if (input.files && input.files.length > 0) {
-      this.selectedFile = input.files[0];
-      this.uploadAudio();
+
+    if (!input.files || input.files.length === 0) {
+      return;
     }
+
+    const file = input.files[0];
+
+    // 🔍 Validar extensión y tipo MIME
+    const fileName = file.name.toLowerCase();
+    const isMp3 = fileName.endsWith('.mp3');
+    const isWav = fileName.endsWith('.wav');
+
+    const allowedMimeTypes = [
+      'audio/mpeg',       // mp3
+      'audio/mp3',
+      'audio/wav',
+      'audio/x-wav',
+      'audio/wave',
+      'audio/x-pn-wav'
+    ];
+
+    const isValidMime = allowedMimeTypes.includes(file.type);
+
+    if ((!isMp3 && !isWav) || !isValidMime) {
+      // ❌ Archivo inválido: mostramos mensaje y limpiamos todo
+      this.uploadError = true;
+      this.errorMessage =
+        'Formato de archivo no válido. Solo se permiten archivos de audio en formato .mp3 o .wav.';
+      this.selectedFile = null;
+      this.isLoading = false;
+
+      // Limpiar el input para que pueda elegir otro archivo
+      input.value = '';
+      this.cdr.detectChanges();
+      return;
+    }
+
+    // ✅ Archivo válido: continuamos con el flujo normal
+    this.selectedFile = file;
+    this.uploadError = false;
+    this.errorMessage = '';
+    this.uploadAudio();
   }
+
 
   uploadAudio(): void {
     if (!this.selectedFile) return;

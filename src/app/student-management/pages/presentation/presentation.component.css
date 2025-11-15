@@ -192,6 +192,12 @@ body {
   margin-top: 1rem;
 }
 
+.error-message {
+  margin-top: 8px;
+  color: #d32f2f;
+  font-size: 0.9rem;
+}
+
 .loading-overlay {
   position: fixed;
   top: 0;

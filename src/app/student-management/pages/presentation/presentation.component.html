@@ -58,6 +58,9 @@
     <p class="selected-file" *ngIf="selectedFile">
       Archivo seleccionado: {{ selectedFile.name }}
     </p>
+    <p class="error-message" *ngIf="uploadError">
+      {{ errorMessage }}
+    </p>
   </div>
 
   <!-- 🔄 MODAL DE CARGA -->
