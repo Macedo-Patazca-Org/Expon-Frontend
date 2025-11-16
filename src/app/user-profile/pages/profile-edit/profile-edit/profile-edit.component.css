@@ -84,6 +84,18 @@ label {
   gap: 0.3rem;
 }
 
+.avatar-preview {
+  margin-top: 0.5rem;
+}
+
+.avatar-preview img {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid #ddd;
+}
+
 /* ----------- Responsive ----------- */
 @media screen and (max-width: 768px) {
   .form-grid {

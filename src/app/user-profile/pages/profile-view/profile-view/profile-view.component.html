@@ -37,13 +37,27 @@
 
       <div class="form-group">
         <label>Foto de perfil</label>
-        <div class="readonly-box">{{ profile?.profile_picture }}</div>
+
+        <ng-container *ngIf="profile?.profile_picture; else noPhoto">
+          <div class="avatar-preview">
+            <img
+              [src]="profile?.profile_picture"
+              alt="Foto de perfil"
+            />
+          </div>
+        </ng-container>
+
+        <ng-template #noPhoto>
+          <div class="readonly-box">
+            Sin foto configurada
+          </div>
+        </ng-template>
       </div>
 
-      <div class="form-group">
+      <!-- <div class="form-group">
         <label>Presentación preferida</label>
         <div class="readonly-box">{{ profile?.preferred_presentation }}</div>
-      </div>
+      </div> -->
 
       <div class="form-group">
         <label>Cuenta</label>
