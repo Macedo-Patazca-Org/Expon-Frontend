@@ -2,28 +2,172 @@
   <div class="register-container">
     <div class="register-form-container">
       <div class="register-form">
-        <h2>Sign up</h2>
-        <form (ngSubmit)="onSubmit()" #registerForm="ngForm">
-          <input type="text" name="username" [(ngModel)]="user.username" required placeholder="Username" />
-          <input type="email" name="email" [(ngModel)]="user.email" required placeholder="Email" />
-          <input type="password" name="password" [(ngModel)]="user.password" required placeholder="Password" />
+        <h2>Registro</h2>
 
+        <form (ngSubmit)="onSubmit()" #registerForm="ngForm">
+          <input
+            type="text"
+            name="username"
+            [(ngModel)]="user.username"
+            required
+            placeholder="Nombre de usuario"
+          />
+          <input
+            type="email"
+            name="email"
+            [(ngModel)]="user.email"
+            required
+            placeholder="Correo electrónico"
+          />
+          <input
+            type="password"
+            name="password"
+            [(ngModel)]="user.password"
+            required
+            placeholder="Contraseña"
+          />
+
+          <!-- Acepto términos y condiciones -->
           <div class="register-options">
-            <label><input type="checkbox" required /> I agree to the terms and conditions</label>
+            <label class="checkbox-label">
+              <input
+                type="checkbox"
+                name="acceptTerms"
+                [(ngModel)]="acceptTerms"
+              />
+              <span>
+                Acepto los
+                <a class="terms-link" (click)="openTerms()">términos y condiciones</a>
+              </span>
+            </label>
           </div>
 
-          <button type="submit">Sign up</button>
+          <button
+            type="submit"
+            [disabled]="registerForm.invalid"
+          >
+            Registrarse
+          </button>
 
           <div *ngIf="errorMessage" class="error-message">
             {{ errorMessage }}
           </div>
         </form>
+
         <p class="signup-link">
-          Already have an account? <a href="/login">Sign in here</a>
+          ¿Ya tienes una cuenta? <a href="/login">Inicia sesión aquí</a>
         </p>
       </div>
     </div>
     <div class="register-illustration"></div>
   </div>
   <div class="register-img"></div>
+
+  <!-- ===== Modal de Términos y Condiciones ===== -->
+  <div class="terms-modal-backdrop" *ngIf="showTermsModal">
+    <div class="terms-modal">
+      <h3>Términos y condiciones de uso de Expon</h3>
+
+      <div class="terms-content">
+        <p>
+          Al registrarte en Expon, aceptas los presentes términos y condiciones
+          que regulan el uso de la plataforma. Expon es una aplicación web diseñada
+          para apoyar el desarrollo de habilidades de comunicación oral mediante
+          transcripción automática, análisis emocional y generación de feedback.
+        </p>
+
+        <h4>1. Finalidad del servicio</h4>
+        <p>
+          Expon está orientada exclusivamente a fines académicos. El usuario se
+          compromete a utilizar la plataforma para preparar, practicar y analizar
+          presentaciones orales en el contexto de estudios universitarios u otras
+          actividades formativas, y no para usos comerciales o ajenos al ámbito educativo.
+        </p>
+
+        <h4>2. Datos recopilados y tratamiento</h4>
+        <p>Al usar Expon, se podrán procesar los siguientes datos:</p>
+        <ul>
+          <li>Archivos de audio que el usuario suba o grabe desde la plataforma.</li>
+          <li>Transcripciones generadas automáticamente a partir de esos audios.</li>
+          <li>Resultados de análisis emocional obtenidos mediante modelos de IA.</li>
+          <li>Datos de cuenta: nombre de usuario, correo electrónico y contraseña encriptada.</li>
+        </ul>
+        <p>
+          Estos datos se utilizan únicamente para procesar las presentaciones,
+          generar el análisis emocional, mostrar el historial al usuario y mejorar
+          su experiencia en la plataforma. Expon no comparte esta información con
+          terceros y la conserva solo durante el tiempo necesario para el funcionamiento
+          del sistema.
+        </p>
+
+        <h4>3. Uso de modelos de IA</h4>
+        <p>
+          El usuario reconoce que la transcripción y el análisis emocional son
+          procesos automáticos con cierto margen de error. Expon no garantiza que
+          los resultados sean totalmente precisos ni que representen una evaluación
+          profesional. El feedback generado por la plataforma tiene carácter
+          orientativo y debe interpretarse como apoyo para la mejora personal.
+        </p>
+
+        <h4>4. Responsabilidades del usuario</h4>
+        <p>El usuario se compromete a no subir ni grabar audios que:</p>
+        <ul>
+          <li>Contengan contenido ofensivo, discriminatorio, violento o inapropiado.</li>
+          <li>Pertenezcan a terceros sin su conocimiento o autorización.</li>
+          <li>Busquen vulnerar, saturar o manipular el funcionamiento de la plataforma.</li>
+        </ul>
+        <p>
+          El usuario es responsable del contenido que genere y de la forma en que
+          utilice los resultados proporcionados por Expon.
+        </p>
+
+        <h4>5. Seguridad y almacenamiento</h4>
+        <p>
+          Expon aplica medidas razonables de seguridad para proteger la información
+          de los usuarios. Los audios pueden almacenarse de forma temporal para su
+          procesamiento; las transcripciones y resultados se asocian a la cuenta del
+          usuario como parte de su historial. No obstante, ningún sistema es
+          completamente invulnerable y el usuario acepta este riesgo inherente al uso
+          de servicios en línea.
+        </p>
+
+        <h4>6. Limitación de responsabilidad</h4>
+        <p>
+          Expon no se responsabiliza por decisiones que el usuario tome basándose en
+          los resultados de análisis o feedback, ni por pérdidas, daños o perjuicios
+          derivados del uso o la imposibilidad de uso de la plataforma. Tampoco se
+          hace responsable por interrupciones temporales del servicio, fallas técnicas
+          o mantenimiento programado.
+        </p>
+
+        <h4>7. Propiedad intelectual</h4>
+        <p>
+          El código, diseño, modelos de IA, logotipos y elementos gráficos asociados
+          a Expon son propiedad de sus desarrolladores. El contenido que el usuario
+          genera (audios, transcripciones y presentaciones) le pertenece, pero
+          autoriza su procesamiento dentro de la plataforma para los fines descritos.
+        </p>
+
+        <h4>8. Modificaciones de los términos</h4>
+        <p>
+          Expon podrá actualizar estos términos y condiciones cuando sea necesario.
+          La versión vigente será la que se muestre en la plataforma. El uso continuado
+          del servicio tras la modificación implica la aceptación de los nuevos términos.
+        </p>
+
+        <h4>9. Aceptación</h4>
+        <p>
+          Al marcar la casilla “Acepto los términos y condiciones” y registrarte en
+          Expon, declaras que has leído, comprendido y aceptas el contenido de este
+          documento.
+        </p>
+      </div>
+
+      <div class="terms-actions">
+        <button type="button" class="btn-close" (click)="closeTerms()">
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
 </div>

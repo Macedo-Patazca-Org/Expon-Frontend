@@ -19,11 +19,37 @@ export class RegisterComponent {
     password: ''
   };
 
+  acceptTerms: boolean = false;
+  showTermsModal: boolean = false;
+
   errorMessage: string = '';
 
   constructor(private authService: AuthService, private router: Router, private snackBar: MatSnackBar) {} 
 
+  openTerms(): void {
+    this.showTermsModal = true;
+  }
+
+  closeTerms(): void {
+    this.showTermsModal = false;
+  }
+
   onSubmit(): void {
+
+  if (!this.acceptTerms) {
+    //this.errorMessage = 'Debes aceptar los términos y condiciones antes de registrarte.';
+    this.snackBar.open(
+      'Debes aceptar los términos y condiciones.',
+      'Cerrar',
+      {
+        duration: 3000,
+        panelClass: ['snackbar-error']
+      }
+    );
+    return;
+  }
+
+  this.errorMessage = '';
   this.authService.register(this.user).subscribe({
     next: (response) => {
       this.snackBar.open('Registro exitoso. ¡Bienvenido!', 'Cerrar', {
