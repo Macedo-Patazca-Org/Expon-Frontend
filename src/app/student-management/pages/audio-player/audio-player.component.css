@@ -96,3 +96,154 @@
   color: #4b5563;
   white-space: pre-wrap; /* por si en el futuro guardas saltos de línea */
 }
+
+/* Header del acordeón */
+.transcription-header {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  gap: 0.5rem; /* pequeño espacio entre icono y texto */
+}
+
+.transcription-header h3 {
+  margin: 0;
+}
+
+.toggle-icon {
+  font-size: 1.2rem;
+  color: #475569;
+}
+
+/* Contenido del acordeón */
+.transcription-content {
+  margin-top: 0.75rem;
+}
+
+/* Tarjeta TTS */
+.tts-card {
+  margin-top: 1.5rem;
+  padding: 1.25rem 1.5rem;
+  background: #f8fafc; /* un gris clarito para diferenciar */
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
+}
+
+/* Botón para generar audio TTS */
+.tts-btn {
+  margin-top: 0.5rem;
+  padding: 0.55rem 1.2rem;
+  border-radius: 999px;
+  border: none;
+  background: #35596b;
+  color: #ffffff;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.tts-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.12);
+}
+
+/* Estado de carga del TTS */
+.tts-loading {
+  margin-top: 0.75rem;
+  color: #35596b;
+  font-weight: 500;
+}
+
+/* Backdrop del modal */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(15, 23, 42, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+/* Card del modal */
+.modal-card {
+  width: min(420px, 92vw);
+  background: white;
+  border-radius: 16px;
+  padding: 1.25rem 1.5rem;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.18);
+}
+
+.modal-card h3 {
+  margin: 0 0 0.35rem;
+  font-size: 1.05rem;
+  color: #0f172a;
+}
+
+.modal-sub {
+  margin: 0 0 1rem;
+  color: #475569;
+  font-size: 0.9rem;
+}
+
+.voice-options {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.voice-option {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.voice-option:hover {
+  background: #f1f5f9;
+}
+
+.voice-option input {
+  transform: scale(1.1);
+}
+
+.voice-option small {
+  color: #64748b;
+}
+
+.modal-actions {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.6rem;
+}
+
+.btn-cancel,
+.btn-confirm {
+  padding: 0.45rem 1rem;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.btn-cancel {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.btn-confirm {
+  background: #35596b;
+  color: white;
+}
+
+.btn-confirm:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

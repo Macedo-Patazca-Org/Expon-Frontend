@@ -118,10 +118,18 @@ export class CustomizeFeedbackComponent implements OnInit {
   withinLevelPct = 0;
   betweenLabel = '';
 
+  presentationId: string | null = null;
+
   ngOnInit(): void {
+    this.presentationId = this.route.snapshot.paramMap.get('id');
     const id = this.route.snapshot.paramMap.get('id');
     if (!id) { this.error = true; this.loading = false; return; }
 
+    if (!this.presentationId) { 
+      this.error = true; 
+      this.loading = false; 
+      return; 
+    }
     forkJoin({
       detail: this.presentationService.getPresentationById(id),
       feedback: this.presentationService.getFeedbackByPresentationId(id).pipe(catchError(() => of(null))),
@@ -136,28 +144,26 @@ export class CustomizeFeedbackComponent implements OnInit {
         this.feedbackData = feedback ? this.mapFeedback(feedback) : null;
 
         // NUEVO: parsear language_feedback con guiones como bullets
-const rawLang = (this.feedbackData?.language_feedback || '').trim();
+        const rawLang = (this.feedbackData?.language_feedback || '').trim();
 
-// 1) Limpieza defensiva: quitar "Oración 1:", "Oración 2:", etc. y normalizar bullets/dashes
-const cleaned = rawLang
-  .replace(/Oraci[oó]n\s*\d+\s*:\s*/gi, '')   // quita "Oración n:"
-  .replace(/[•–—]/g, '-');                    // normaliza posibles viñetas/dashes a "-"
+        // 1) Limpieza defensiva: quitar "Oración 1:", "Oración 2:", etc. y normalizar bullets/dashes
+        const cleaned = rawLang
+          .replace(/Oraci[oó]n\s*\d+\s*:\s*/gi, '')   // quita "Oración n:"
+          .replace(/[•–—]/g, '-');                    // normaliza posibles viñetas/dashes a "-"
 
-// 2) Split principal: cada guion indica un bullet
-this.languageBullets = cleaned
-  .split(/\s*-\s+/)                            // corta " - " o "- "
-  .map(s => s.trim())
-  .filter(Boolean);
+        // 2) Split principal: cada guion indica un bullet
+        this.languageBullets = cleaned
+          .split(/\s*-\s+/)                            // corta " - " o "- "
+          .map(s => s.trim())
+          .filter(Boolean);
 
-// 3) Fallback: si no hubo suficientes guiones, usa saltos de línea como respaldo
-if (this.languageBullets.length < 2) {
-  this.languageBullets = cleaned
-    .split(/\r?\n+/)
-    .map(s => s.replace(/^[-•]\s*/, '').trim())
-    .filter(Boolean);
-}
-
-
+        // 3) Fallback: si no hubo suficientes guiones, usa saltos de línea como respaldo
+        if (this.languageBullets.length < 2) {
+          this.languageBullets = cleaned
+            .split(/\r?\n+/)
+            .map(s => s.replace(/^[-•]\s*/, '').trim())
+            .filter(Boolean);
+        }
 
         // 3) Transcript y análisis de lenguaje
         this.transcript = (detail?.transcript || '').trim() || null;
@@ -267,6 +273,11 @@ if (this.languageBullets.length < 2) {
 
   goToPractice() {
     this.router.navigate(['/presentations']);
+  }
+
+  goToAudio(): void {
+    if (!this.presentationId) return;
+    this.router.navigate(['/audio-player', this.presentationId]);
   }
 
   // Lenguaje (regex simple)
@@ -474,8 +485,5 @@ downloadReport(): void {
       });
   }, 0);
 }
-
-
-
 }
 
