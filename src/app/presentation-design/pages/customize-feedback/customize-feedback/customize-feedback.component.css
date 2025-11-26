@@ -140,6 +140,23 @@
 }
 .download-button:hover{ background:#009e87; }
 
+.audios-btn {
+  margin-top: 0.5rem;
+  padding: 0.55rem 1.2rem;
+  border-radius: 999px;
+  border: none;
+  background: #35596b;
+  color: #ffffff;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.audios-btn:hover {
+  background: #e0e7ff;
+  border: 1px solid #35596b;
+}
+
 /* ===== Responsive ===== */
 @media (max-width:1100px){
   .kpi-row{ grid-template-columns:repeat(3,1fr); }

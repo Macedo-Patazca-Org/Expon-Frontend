@@ -1,17 +1,20 @@
 <section class="player-wrap">
   <h2>Reproducir presentación</h2>
-  <!-- <div class="meta">ID: {{ id }}</div> -->
 
+  <!-- Mensajes -->
   <div *ngIf="loading">Cargando audio…</div>
   <div *ngIf="!loading && error" class="alert-error">{{ error }}</div>
 
-  <!-- Tarjeta del reproductor -->
+  <!-- ========================= -->
+  <!-- 🎧 TARJETA AUDIO ORIGINAL -->
+  <!-- ========================= -->
   <div *ngIf="!error" class="player-card">
+    <h3 class="card-title">Audio original del estudiante</h3>
+
     <div class="player-header">
       <div class="time">
         {{ formatTime(currentTime) }} / {{ formatTime(duration) }}
       </div>
-
 
       <div class="speed">
         Velocidad:
@@ -24,7 +27,7 @@
       </div>
     </div>
 
-    <!-- Waveform (WaveSurfer dibuja aquí) -->
+    <!-- Waveform original -->
     <div #waveform class="waveform"></div>
 
     <div class="player-controls">
@@ -36,33 +39,158 @@
       </button>
     </div>
 
-    <audio
-      #audioRef
-      preload="auto"
-      style="display: none"
-    ></audio>
-
+    <audio #audioRef preload="auto" style="display:none"></audio>
 
     <p *ngIf="!loading && !error && !audioUrl" class="no-audio">
       Vista creada correctamente. Falta conectar el audio del backend.
     </p>
   </div>
-  <!-- Tarjeta de transcripción -->
-  <section
-    class="transcription-card"
-    *ngIf="transcription || transcriptionLoading || transcriptionError"
-  >
-    <h3>Transcripción</h3>
 
-    <p *ngIf="transcriptionLoading">Cargando transcripción…</p>
+  <!-- ========================== -->
+  <!-- 📄 TRANSCRIPCIÓN (COLAPSABLE Y EN EL MEDIO) -->
+  <!-- ========================== -->
+  <div class="transcription-card" *ngIf="transcription || transcriptionLoading || transcriptionError">
 
-    <p *ngIf="transcriptionError" class="alert-error">
-      {{ transcriptionError }}
+    <!-- Header clickable -->
+    <div class="transcription-header" (click)="showTranscription = !showTranscription">
+      <span class="toggle-icon">{{ showTranscription ? '▾' : '▸' }}</span>
+      <h3>Transcripción</h3>
+    </div>
+
+    <!-- Contenido colapsable -->
+    <div *ngIf="showTranscription" class="transcription-content">
+
+      <p *ngIf="transcriptionLoading">Cargando transcripción…</p>
+
+      <p *ngIf="transcriptionError" class="alert-error">
+        {{ transcriptionError }}
+      </p>
+
+      <div *ngIf="transcription" class="transcription-body">
+        {{ transcription }}
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ========================== -->
+  <!-- 🔊 AUDIO TTS DE REFERENCIA -->
+  <!-- ========================== -->
+  <div class="player-card tts-card">
+    <h3 class="card-title">Audio de referencia (Asistente de voz)</h3>
+
+    <p class="card-description">
+      Este audio es una guía generada automáticamente a partir de tu transcripción.
+      Te ayuda a escuchar una exposición clara, pausada y segura.
     </p>
 
-    <div *ngIf="transcription" class="transcription-body">
-      {{ transcription }}
+    <!-- Botón solo si NO existe audio TTS -->
+    <button
+      *ngIf="!ttsAudioUrl"
+      type="button"
+      class="tts-btn"
+      (click)="openVoiceModal()"
+      [disabled]="ttsLoading"
+    >
+      Generar audio de referencia
+    </button>
+    <p *ngIf="ttsAudioUrl && !ttsLoading" class="tts-ready-text">
+      Ya tienes un audio de referencia generado para esta presentación.
+    </p>
+
+    <!-- Estado de carga -->
+    <div *ngIf="ttsLoading" class="tts-loading">Generando audio…</div>
+    <div *ngIf="ttsError" class="alert-error">{{ ttsError }}</div>
+
+    <!-- Cuando ya existe el audio TTS -->
+    <div *ngIf="ttsAudioUrl" class="tts-player">
+      <div class="player-header">
+        <div class="time">
+          {{ formatTime(ttsCurrentTime) }} / {{ formatTime(ttsDuration) }}
+        </div>
+
+        <div class="speed">
+          Velocidad:
+          <select [(ngModel)]="ttsPlaybackRate" (change)="changeSpeedTts()">
+            <option [value]="0.75">0.75x</option>
+            <option [value]="1">1.0x</option>
+            <option [value]="1.25">1.25x</option>
+            <option [value]="1.5">1.5x</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Waveform TTS -->
+      <div #waveformTts class="waveform"></div>
+
+      <div class="player-controls">
+        <button type="button" (click)="togglePlayTts()" [disabled]="!ttsWaveReady">
+          {{ ttsIsPlaying ? 'Pausar' : 'Reproducir' }}
+        </button>
+        <button type="button" (click)="stopTts()" [disabled]="!ttsWaveReady">
+          Detener
+        </button>
+      </div>
+
+      <audio #audioTtsRef preload="auto" style="display:none"></audio>
     </div>
-  </section>
+  </div>
+
+  <!-- ========================== -->
+  <!-- 🛑 MODAL DE SELECCIÓN DE VOZ -->
+  <!-- ========================== -->
+  <div class="modal-backdrop" *ngIf="showVoiceModal">
+    <div class="modal-card">
+      <h3>Elige la voz del audio de referencia</h3>
+      <p class="modal-sub">
+        Selecciona si deseas una voz masculina o femenina.
+      </p>
+
+      <div class="voice-options">
+
+        <!-- Mujer -->
+        <label class="voice-option">
+          <input
+            type="radio"
+            name="voice"
+            (change)="selectedVoice = 'Sulafat'"
+          />
+          <div>
+            <strong>Voz femenina</strong>
+            <small>Sulafat</small>
+          </div>
+        </label>
+
+        <!-- Hombre -->
+        <label class="voice-option">
+          <input
+            type="radio"
+            name="voice"
+            (change)="selectedVoice = 'Umbriel'"
+          />
+          <div>
+            <strong>Voz masculina</strong>
+            <small>Umbriel</small>
+          </div>
+        </label>
+
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn-cancel" (click)="closeVoiceModal()">
+          Cancelar
+        </button>
+        <button
+          type="button"
+          class="btn-confirm"
+          [disabled]="!selectedVoice"
+          (click)="confirmVoiceAndGenerate()"
+        >
+          Generar
+        </button>
+      </div>
+    </div>
+  </div>
 
 </section>

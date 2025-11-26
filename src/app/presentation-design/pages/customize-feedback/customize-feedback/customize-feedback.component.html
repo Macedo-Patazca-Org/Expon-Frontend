@@ -92,17 +92,17 @@
   </article>
 
   <!-- Lenguaje -->
-<article class="feedback-block col-7">
-  <h4 class="block-title">LENGUAJE</h4>
+  <article class="feedback-block col-7">
+    <h4 class="block-title">LENGUAJE</h4>
 
-  <ng-container *ngIf="languageBullets?.length; else noLang">
-    <ul class="bulleted">
-      <li *ngFor="let item of languageBullets">{{ item }}</li>
-    </ul>
-  </ng-container>
+    <ng-container *ngIf="languageBullets?.length; else noLang">
+      <ul class="bulleted">
+        <li *ngFor="let item of languageBullets">{{ item }}</li>
+      </ul>
+    </ng-container>
 
-  <ng-template #noLang>—</ng-template>
-</article>
+    <ng-template #noLang>—</ng-template>
+  </article>
 
 
   <!-- Reflexión -->
@@ -296,13 +296,24 @@
 
 <!-- ===== Acciones ===== -->
 <div class="feedback-actions">
+
+  <!-- NUEVO BOTÓN -->
+  <button 
+    class="link-button audios-btn"
+    (click)="goToAudio()"
+    style="margin-right: auto;"
+  >
+    🎧 Audio
+  </button>
+
   <a routerLink="/home" class="link-button">Volver al inicio</a>
+
   <button
-  mat-flat-button
-  class="download-button"
-  (click)="downloadReport()"
->
-  Descargar reporte
-</button>
+    mat-flat-button
+    class="download-button"
+    (click)="downloadReport()"
+  >
+    Descargar reporte
+  </button>
 
 </div>
